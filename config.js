@@ -5,11 +5,8 @@ window.GAME5_CONFIG = {
     ticker: "GAME5",
     // Dán Contract Address (CA) vào đây. Để "" thì website hiện "Coming soon".
     contracts: {
-      eth: "",
-      sol: "",
-      robinhood: "",
-      base: "",
-      bsc: ""
+      evm: "",  // dùng chung cho ETH, Robinhood, Base, BSC
+      sol: ""   // Solana
     }
   },
   links: {

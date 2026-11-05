@@ -45,7 +45,7 @@ $("#chainTabs").onclick = e => { const b = e.target.closest("button"); if (!b) r
 // CA
 function renderCA() {
   $("#caList").innerHTML = C.chains.map(c => {
-    const a = C.token.contracts[c.id];
+    const a = C.token.contracts[c.id === "sol" ? "sol" : "evm"];
     return `<div class="ca"><span class="n"><i style="background:${c.color}"></i>${c.name}</span><code>${a || "Coming soon"}</code>${a ? `<button data-a="${a}">Copy</button>${c.explorer ? `<a class="ca-btn" href="${c.explorer}${a}" target="_blank" rel="noopener"><button>↗</button></a>` : ""}` : ""}</div>`;
   }).join("");
 }

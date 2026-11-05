@@ -3,7 +3,7 @@
 Multichain gaming network: ETH · SOL · Robinhood · Base · BSC. Token **$GAME5** · X: [@Game5Network](https://x.com/Game5Network)
 
 ## Cập nhật Contract Address
-Sửa file `config.js` → `token.contracts` (eth, sol, robinhood, base, bsc). Commit lên `main`, Vercel tự deploy.
+Sửa file `config.js` → `token.contracts`: `evm` (dùng chung ETH, Robinhood, Base, BSC) và `sol` (Solana). Commit lên `main`, Vercel tự deploy.
 
 Các link (Telegram, Docs, Buy) và tokenomics cũng nằm trong `config.js`.
 
