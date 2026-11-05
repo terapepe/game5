@@ -17,7 +17,34 @@ const fmt = n => (Math.round(n * 100) / 100).toLocaleString("en-US");
 const toast = t => { const el = $("#toast"); el.textContent = t; el.classList.add("on"); clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove("on"), 2400); };
 const bal = () => bals[chain] ?? (bals[chain] = 1000);
 const setBal = v => { bals[chain] = Math.max(0, v); store.set("bals", bals); renderBal(); };
-const renderBal = () => { $("#bal").textContent = fmt(bal()); $("#balChain").textContent = chainOf(chain).symbol; };
+const renderBal = () => { $("#bal").textContent = fmt(bal()); };
+
+/* ---------- $GAME5 wallet balance ---------- */
+const caOf = id => C.token.contracts[id === "sol" ? "sol" : "evm"];
+const fmtUnits = (raw, dec) => { const d = 10n ** BigInt(dec), w = raw / d, f = (raw % d).toString().padStart(dec, "0").slice(0, 2); return Number(w).toLocaleString("en-US") + (dec && +f ? "." + f : ""); };
+async function tokBalance() {
+  const ca = caOf(chain);
+  if (!wallet || !ca) return null;
+  if (chain === "sol") {
+    if (wallet.type !== "sol") return null;
+    const r = await fetch(C.rpc.sol, { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "getTokenAccountsByOwner", params: [wallet.addr, { mint: ca }, { encoding: "jsonParsed" }] }) }).then(r => r.json());
+    const accs = r.result?.value || [];
+    const dec = accs[0]?.account.data.parsed.info.tokenAmount.decimals ?? 0;
+    return fmtUnits(accs.reduce((s, a) => s + BigInt(a.account.data.parsed.info.tokenAmount.amount), 0n), dec);
+  }
+  if (wallet.type !== "evm") return null;
+  const eth = window.ethereum;
+  if ((await eth.request({ method: "eth_chainId" })).toLowerCase() !== EVM_IDS[chain]) return null;
+  const call = data => eth.request({ method: "eth_call", params: [{ to: ca, data }, "latest"] });
+  const [raw, dec] = await Promise.all([call("0x70a08231" + wallet.addr.slice(2).toLowerCase().padStart(64, "0")), call("0x313ce567")]);
+  return fmtUnits(BigInt(raw), Number(BigInt(dec)));
+}
+async function renderTok() {
+  $("#tokChain").textContent = "GAME5 · " + chainOf(chain).symbol;
+  const el = $("#tokBal"); el.textContent = "…";
+  try { el.textContent = (await tokBalance()) ?? "—"; } catch { el.textContent = "—"; }
+}
 
 /* ---------- provably fair ---------- */
 const hex = b => [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, "0")).join("");
@@ -40,7 +67,7 @@ $("#chainCards").innerHTML = C.chains.map(c => `<div class="card chain-c" style=
 function renderTabs() {
   $("#chainTabs").innerHTML = C.chains.map(c => `<button data-c="${c.id}" class="${c.id === chain ? "on" : ""}"><i style="background:${c.color}"></i>${c.name}</button>`).join("");
 }
-$("#chainTabs").onclick = e => { const b = e.target.closest("button"); if (!b) return; chain = b.dataset.c; store.set("chain", chain); renderTabs(); renderBal(); switchEvm(); };
+$("#chainTabs").onclick = e => { const b = e.target.closest("button"); if (!b) return; chain = b.dataset.c; store.set("chain", chain); renderTabs(); renderBal(); switchEvm().then(renderTok); };
 
 // CA
 function renderCA() {
@@ -51,7 +78,6 @@ function renderCA() {
 }
 $("#caList").onclick = e => { const a = e.target.dataset.a; if (a) navigator.clipboard.writeText(a).then(() => toast("Contract address copied")); };
 // buy popup (Uniswap per chain)
-const caOf = id => C.token.contracts[id === "sol" ? "sol" : "evm"];
 $("#buyList").innerHTML = C.chains.map(c => {
   const a = caOf(c.id), url = a && C.buy[c.id] ? C.buy[c.id].replace("{ca}", a) : "";
   return url
@@ -96,7 +122,7 @@ $("#connectBtn").onclick = async () => {
       const [a] = await window.ethereum.request({ method: "eth_requestAccounts" });
       wallet = { type: "evm", addr: a }; await switchEvm();
     }
-    $("#connectBtn").textContent = short(wallet.addr); toast("Wallet connected");
+    $("#connectBtn").textContent = short(wallet.addr); toast("Wallet connected"); renderTok();
   } catch (e) { toast(e?.message?.slice(0, 80) || "Connection cancelled"); }
 };
 
@@ -247,5 +273,7 @@ playBtn.onclick = async () => {
 $("#closeModal").onclick = () => { if (G.mines.live) G.mines.cash(); $("#modal").hidden = true; };
 $("#modal").onclick = e => { if (e.target.id === "modal") $("#closeModal").onclick(); };
 
-renderTabs(); renderBal(); renderCA(); renderStats();
+window.ethereum?.on?.("chainChanged", renderTok);
+window.ethereum?.on?.("accountsChanged", a => { if (wallet?.type === "evm") { if (!a[0]) { wallet = null; $("#connectBtn").textContent = "Connect Wallet"; } else { wallet.addr = a[0]; $("#connectBtn").textContent = short(a[0]); } renderTok(); } });
+renderTabs(); renderBal(); renderCA(); renderStats(); renderTok();
 })();

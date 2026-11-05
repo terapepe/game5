@@ -23,6 +23,8 @@ window.GAME5_CONFIG = {
     robinhood: "https://app.uniswap.org/swap?chain=robinhood&outputCurrency={ca}",
     sol:       "https://app.uniswap.org/swap?chain=solana&outputCurrency={ca}"
   },
+  // RPC dùng để đọc số dư $GAME5 trên Solana (đổi sang RPC riêng như Helius nếu bị giới hạn)
+  rpc: { sol: "https://api.mainnet-beta.solana.com" },
   chains: [
     { id: "eth",       name: "Ethereum",  symbol: "ETH", color: "#8a92ff", explorer: "https://etherscan.io/token/" },
     { id: "sol",       name: "Solana",    symbol: "SOL", color: "#14f195", explorer: "https://solscan.io/token/" },
