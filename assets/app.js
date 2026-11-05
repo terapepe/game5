@@ -133,9 +133,9 @@ const GAMES = [
   { id: "crash", name: "Crash",     ico: "🚀", c: "#14f195", rtp: "99%", d: "Cash out before the rocket crashes." },
   { id: "mines", name: "Mines",     ico: "💎", c: "#3b7bff", rtp: "99%", d: "Find gems, dodge the mines." },
   { id: "wheel", name: "Wheel",     ico: "🎡", c: "#8a92ff", rtp: "98%", d: "Spin for up to 20×." },
-  { id: "plinko",name: "Plinko",    ico: "🔻", c: "#ff4d6d", soon: 1, d: "Coming in Phase 2." },
-  { id: "poker", name: "PvP Poker", ico: "🃏", c: "#14f195", soon: 1, d: "Coming in Phase 4." },
-  { id: "race",  name: "Racing",    ico: "🏁", c: "#ccff00", soon: 1, d: "Coming in Phase 4." }
+  { id: "plinko",name: "Plinko",    ico: "🔻", c: "#ff4d6d", soon: 1, d: "Coming January 2027." },
+  { id: "poker", name: "PvP Poker", ico: "🃏", c: "#14f195", soon: 1, d: "Coming February 2027." },
+  { id: "race",  name: "Racing",    ico: "🏁", c: "#ccff00", soon: 1, d: "Coming February 2027." }
 ];
 $("#gameGrid").innerHTML = GAMES.map(g => `<div class="card game${g.soon ? " soon" : ""}" data-g="${g.id}" style="--c:${g.c}">${g.rtp ? `<span class="rtp">RTP ${g.rtp}</span>` : `<span class="rtp">SOON</span>`}<div class="art">${g.ico}</div><div class="meta"><h3>${g.name}</h3><p>${g.d}</p></div></div>`).join("");
 $("#gameGrid").onclick = e => { const g = e.target.closest(".game"); if (g && !g.classList.contains("soon")) open(g.dataset.g); };

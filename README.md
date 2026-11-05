@@ -2,12 +2,12 @@
 
 Multichain gaming network: ETH · SOL · Robinhood · Base · BSC. Token **$GAME5** · X: [@Game5Network](https://x.com/Game5Network)
 
-## Cập nhật Contract Address
-Sửa file `config.js` → `token.contracts`: `evm` (dùng chung ETH, Robinhood, Base, BSC) và `sol` (Solana). Commit lên `main`, Vercel tự deploy.
+## Update Contract Addresses
+Edit `config.js` → `token.contracts`: `evm` (shared by ETH, Robinhood, Base, BSC) and `sol` (Solana). Commit to `main` and Vercel deploys automatically.
 
-Các link (Telegram, Docs, Buy) và tokenomics cũng nằm trong `config.js`.
+Social links, Uniswap buy links and the Solana RPC are also in `config.js`.
 
-## Cấu trúc
-- `index.html` — trang chính
-- `assets/style.css`, `assets/app.js` — giao diện + game (Dice, Coin Flip, Crash, Mines, Wheel)
-- `config.js` — CA, link, chain, tokenomics
+## Structure
+- `index.html` — main page
+- `assets/style.css`, `assets/app.js` — UI and games (Dice, Coin Flip, Crash, Mines, Wheel)
+- `config.js` — contract addresses, links, chains, RPC
