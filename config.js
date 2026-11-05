@@ -5,12 +5,12 @@ window.GAME5_CONFIG = {
     ticker: "GAME5",
     // Paste the Contract Addresses (CA) here. Leave "" to show "Coming soon".
     contracts: {
-      evm: "",  // shared by ETH, Robinhood, Base, BSC
+      evm: "0x",  // shared by ETH, Robinhood, Base, BSC
       sol: ""   // Solana
     }
   },
   links: {
-    x: "https://x.com/Game5Network",
+    x: "https://x.com/Game5Fun",
     telegram: "",
     docs: ""
   },
