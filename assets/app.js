@@ -1,7 +1,7 @@
 (() => {
 const C = window.GAME5_CONFIG;
 const $ = s => document.querySelector(s);
-const EVM_IDS = { eth: "0x1", base: "0x2105", bsc: "0x38" };
+const EVM_IDS = { eth: "0x1", base: "0x2105", bsc: "0x38", robinhood: "0x1237" };
 const store = {
   get(k, d) { try { return JSON.parse(localStorage.getItem("g5_" + k)) ?? d; } catch { return d; } },
   set(k, v) { try { localStorage.setItem("g5_" + k, JSON.stringify(v)); } catch {} }
@@ -45,22 +45,22 @@ $("#chainTabs").onclick = e => { const b = e.target.closest("button"); if (!b) r
 // CA
 function renderCA() {
   $("#caList").innerHTML = C.chains.map(c => {
-    const a = C.token.contracts[c.id === "sol" ? "sol" : "evm"];
+    const a = caOf(c.id);
     return `<div class="ca"><span class="n"><i style="background:${c.color}"></i>${c.name}</span><code>${a || "Coming soon"}</code>${a ? `<button data-a="${a}">Copy</button>${c.explorer ? `<a class="ca-btn" href="${c.explorer}${a}" target="_blank" rel="noopener"><button>↗</button></a>` : ""}` : ""}</div>`;
   }).join("");
 }
 $("#caList").onclick = e => { const a = e.target.dataset.a; if (a) navigator.clipboard.writeText(a).then(() => toast("Contract address copied")); };
-const buy = $("#buyBtn");
-if (C.links.buy) buy.href = C.links.buy; else { buy.textContent = "Launching soon"; buy.removeAttribute("href"); buy.style.opacity = .6; }
-
-// tokenomics donut
-const pal = ["#ccff00", "#14f195", "#3b7bff", "#8a92ff", "#f3ba2f", "#ff4d6d"];
-let off = 0;
-$("#donut").innerHTML = `<circle cx="21" cy="21" r="15.9" fill="none" stroke="#1a1f2b" stroke-width="5"/>` + C.tokenomics.map((t, i) => {
-  const s = `<circle cx="21" cy="21" r="15.9" fill="none" stroke="${pal[i % pal.length]}" stroke-width="5" stroke-dasharray="${t.pct - .6} ${100 - t.pct + .6}" stroke-dashoffset="${-off}"/>`;
-  off += t.pct; return s;
+// buy popup (Uniswap per chain)
+const caOf = id => C.token.contracts[id === "sol" ? "sol" : "evm"];
+$("#buyList").innerHTML = C.chains.map(c => {
+  const a = caOf(c.id), url = a && C.buy[c.id] ? C.buy[c.id].replace("{ca}", a) : "";
+  return url
+    ? `<a class="buy-opt" href="${url}" target="_blank" rel="noopener"><i style="background:${c.color}">${c.symbol}</i><span><b>${c.name}</b><small>Uniswap</small></span><em>→</em></a>`
+    : `<div class="buy-opt off"><i style="background:${c.color}">${c.symbol}</i><span><b>${c.name}</b><small>Coming soon</small></span></div>`;
 }).join("");
-$("#legend").innerHTML = C.tokenomics.map((t, i) => `<li><span><i style="background:${pal[i % pal.length]}"></i>${t.label}</span><b>${t.pct}%</b></li>`).join("");
+const buyModal = $("#buyModal");
+document.querySelectorAll("#buyBtn,[data-buy]").forEach(b => b.onclick = () => buyModal.hidden = false);
+buyModal.onclick = e => { if (e.target === buyModal || e.target.closest("[data-close]")) buyModal.hidden = true; };
 
 /* ---------- stats & feed ---------- */
 function renderStats() {

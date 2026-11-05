@@ -32,7 +32,7 @@
     <div class="pill">● LIVE ON 5 NETWORKS</div>
     <h1>Play games.<br><em>Win on-chain.</em></h1>
     <p>Game5 turns provably-fair games into real rewards across Ethereum, Solana, Robinhood Chain, Base and BNB Chain — one account, five networks, one token: <b>$GAME5</b>.</p>
-    <div class="cta"><a href="#games" class="btn big">Start Playing</a><a href="#token" class="btn ghost big">Get $GAME5</a></div>
+    <div class="cta"><a href="#games" class="btn big">Start Playing</a><button class="btn ghost big" data-buy>Buy $GAME5</button></div>
     <div class="hero-chains" id="heroChains"></div>
   </div>
   <div class="hero-art">
@@ -70,12 +70,7 @@
     <div class="card">
       <h3>Contract Addresses</h3>
       <div id="caList"></div>
-      <div class="cta"><a class="btn" id="buyBtn" href="#" target="_blank" rel="noopener">Buy $GAME5</a><a class="btn ghost" href="https://x.com/Game5Network" target="_blank" rel="noopener">Follow @Game5Network</a></div>
-    </div>
-    <div class="card">
-      <h3>Tokenomics</h3>
-      <div class="donut-wrap"><svg viewBox="0 0 42 42" class="donut" id="donut"></svg><div class="donut-c"><b>$GAME5</b><span>Allocation</span></div></div>
-      <ul class="legend" id="legend"></ul>
+      <div class="cta"><button class="btn" id="buyBtn">Buy $GAME5</button><a class="btn ghost" href="https://x.com/Game5Network" target="_blank" rel="noopener">Follow @Game5Network</a></div>
     </div>
     <div class="card utility">
       <h3>Utility</h3>
@@ -96,14 +91,14 @@
 </section>
 
 <section id="roadmap" class="wrap">
-  <div class="sec-h"><h2>Roadmap</h2><p>From launch to the multichain gaming layer.</p></div>
+  <div class="sec-h"><h2>Roadmap</h2><p>Five months from launch to the full Game5 Network.</p></div>
   <div class="road">
     <div class="road-line"><div class="road-fill"></div></div>
-    <div class="phase done"><div class="dot"></div><span class="tag">Phase 1 · Q4 2026</span><h3>Genesis</h3><ul><li>Brand, website & socials</li><li>Game lobby: Dice, Flip, Crash, Mines, Wheel</li><li>Multichain wallet connect</li><li>$GAME5 launch</li></ul></div>
-    <div class="phase now"><div class="dot"></div><span class="tag">Phase 2 · Q1 2027</span><h3>On-chain Rewards</h3><ul><li>Reward contracts on ETH, Base, BSC</li><li>Solana & Robinhood Chain programs</li><li>Provably-fair verifier</li><li>Daily quests & streaks</li></ul></div>
-    <div class="phase"><div class="dot"></div><span class="tag">Phase 3 · Q2 2027</span><h3>Compete</h3><ul><li>Global leaderboards</li><li>Weekly tournaments & prize pools</li><li>Referral program</li><li>CEX listings</li></ul></div>
-    <div class="phase"><div class="dot"></div><span class="tag">Phase 4 · Q3 2027</span><h3>Expand</h3><ul><li>$GAME5 staking & revenue share</li><li>PvP and multiplayer games</li><li>Mobile app</li><li>Partner game SDK</li></ul></div>
-    <div class="phase"><div class="dot"></div><span class="tag">Phase 5 · Q4 2027+</span><h3>Game5 Network</h3><ul><li>DAO governance</li><li>Cross-chain reward bridge</li><li>Third-party game marketplace</li><li>New chains by vote</li></ul></div>
+    <div class="phase now"><div class="dot"></div><span class="tag">Month 1</span><h3>November 2026</h3><ul><li>Website & brand launch</li><li>Game lobby: Dice, Flip, Crash, Mines, Wheel</li><li>Multichain wallet connect</li><li>$GAME5 launch on ETH, SOL, Robinhood, Base, BSC</li></ul></div>
+    <div class="phase"><div class="dot"></div><span class="tag">Month 2</span><h3>December 2026</h3><ul><li>Reward contracts on EVM chains</li><li>Solana reward program</li><li>Provably-fair verifier page</li><li>Daily quests & streaks</li></ul></div>
+    <div class="phase"><div class="dot"></div><span class="tag">Month 3</span><h3>January 2027</h3><ul><li>Global leaderboards</li><li>Weekly tournaments & prize pools</li><li>Referral program</li><li>Plinko release</li></ul></div>
+    <div class="phase"><div class="dot"></div><span class="tag">Month 4</span><h3>February 2027</h3><ul><li>$GAME5 staking & revenue share</li><li>Holder reward boosts</li><li>PvP Poker & Racing</li><li>Partner game integrations</li></ul></div>
+    <div class="phase"><div class="dot"></div><span class="tag">Month 5</span><h3>March 2027</h3><ul><li>Mobile app (iOS & Android)</li><li>DAO governance votes</li><li>Cross-chain reward bridge</li><li>Game5 Network SDK</li></ul></div>
   </div>
 </section>
 
@@ -140,6 +135,16 @@
       </div>
       <div class="m-stage" id="gStage"></div>
     </div>
+  </div>
+</div>
+<!-- Buy modal -->
+<div class="modal" id="buyModal" hidden>
+  <div class="modal-box buy-box">
+    <button class="x" data-close>✕</button>
+    <h3>Buy $GAME5</h3>
+    <p class="sub">Choose a network — swap on Uniswap.</p>
+    <div class="buy-list" id="buyList"></div>
+    <small class="sub">Always verify the contract address before swapping.</small>
   </div>
 </div>
 <div class="toast" id="toast"></div>

@@ -13,7 +13,15 @@ window.GAME5_CONFIG = {
     x: "https://x.com/Game5Network",
     telegram: "",
     docs: "",
-    buy: ""
+    buy: ""  // (không dùng nữa — nút Buy mở popup chọn mạng, xem "buy" bên dưới)
+  },
+  // Link mua trên Uniswap theo mạng. {ca} sẽ được thay bằng CA tương ứng.
+  buy: {
+    eth:       "https://app.uniswap.org/swap?chain=mainnet&outputCurrency={ca}",
+    base:      "https://app.uniswap.org/swap?chain=base&outputCurrency={ca}",
+    bsc:       "https://app.uniswap.org/swap?chain=bnb&outputCurrency={ca}",
+    robinhood: "https://app.uniswap.org/swap?chain=robinhood&outputCurrency={ca}",
+    sol:       "https://app.uniswap.org/swap?chain=solana&outputCurrency={ca}"
   },
   chains: [
     { id: "eth",       name: "Ethereum",  symbol: "ETH", color: "#8a92ff", explorer: "https://etherscan.io/token/" },
@@ -21,12 +29,5 @@ window.GAME5_CONFIG = {
     { id: "robinhood", name: "Robinhood", symbol: "RH",  color: "#ccff00", explorer: "" },
     { id: "base",      name: "Base",      symbol: "BASE",color: "#3b7bff", explorer: "https://basescan.org/token/" },
     { id: "bsc",       name: "BNB Chain", symbol: "BSC", color: "#f3ba2f", explorer: "https://bscscan.com/token/" }
-  ],
-  tokenomics: [
-    { label: "Reward Pool (Play-to-Earn)", pct: 40 },
-    { label: "Liquidity",                  pct: 25 },
-    { label: "Community & Airdrop",        pct: 15 },
-    { label: "Ecosystem & Partners",       pct: 10 },
-    { label: "Team (vesting 12 tháng)",    pct: 10 }
   ]
 };
