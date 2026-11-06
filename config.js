@@ -10,7 +10,7 @@ window.GAME5_CONFIG = {
     }
   },
   links: {
-    x: "https://x.com/Game5Fun",
+    x: "https://x.com/Game5Network",
     telegram: "",
     docs: ""
   },
