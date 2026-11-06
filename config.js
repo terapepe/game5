@@ -4,7 +4,7 @@ window.GAME5_CONFIG = {
     name: "Game5",
     ticker: "GAME5",
     // $GAME5 contract address on Robinhood Chain. Leave "" to show "Coming soon".
-    contract: ""
+    contract: "0x4283abb0e611ba5490aa5f371d17fc5070f8ed82"
   },
   links: {
     x: "https://x.com/Game5Fun",
@@ -12,7 +12,7 @@ window.GAME5_CONFIG = {
     docs: ""
   },
   // Uniswap buy link. {ca} is replaced with the contract address.
-  buy: "https://app.uniswap.org/swap?chain=robinhood&outputCurrency={ca}",
+  buy: "https://ponsfamily.com/launchpad/{ca}",
   // Robinhood Chain mainnet
   chain: {
     id: 4663,
