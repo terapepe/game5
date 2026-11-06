@@ -1,39 +1,47 @@
 (() => {
 const C = window.GAME5_CONFIG;
 const $ = s => document.querySelector(s);
-const CH = C.chain, CHAIN_HEX = "0x" + CH.id.toString(16), CA = C.token.contract;
+const EVM_IDS = { eth: "0x1", base: "0x2105", bsc: "0x38", robinhood: "0x1237" };
 const store = {
   get(k, d) { try { return JSON.parse(localStorage.getItem("g5_" + k)) ?? d; } catch { return d; } },
   set(k, v) { try { localStorage.setItem("g5_" + k, JSON.stringify(v)); } catch {} }
 };
+let chain = store.get("chain", "eth");
 let bals = store.get("bals", {});
 let stats = store.get("stats", { rounds: 0, wagered: 0, won: 0, best: 0 });
 let feed = store.get("feed", []);
 let wallet = null;
 
+const chainOf = id => C.chains.find(c => c.id === id);
 const fmt = n => (Math.round(n * 100) / 100).toLocaleString("en-US");
 const toast = t => { const el = $("#toast"); el.textContent = t; el.classList.add("on"); clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove("on"), 2400); };
-const bal = () => bals.rh ?? (bals.rh = 1000);
-const setBal = v => { bals.rh = Math.max(0, v); store.set("bals", bals); renderBal(); };
+const bal = () => bals[chain] ?? (bals[chain] = 1000);
+const setBal = v => { bals[chain] = Math.max(0, v); store.set("bals", bals); renderBal(); };
 const renderBal = () => { $("#bal").textContent = fmt(bal()); };
 
 /* ---------- $GAME5 wallet balance ---------- */
+const caOf = id => C.token.contracts[id === "sol" ? "sol" : "evm"];
 const fmtUnits = (raw, dec) => { const d = 10n ** BigInt(dec), w = raw / d, f = (raw % d).toString().padStart(dec, "0").slice(0, 2); return Number(w).toLocaleString("en-US") + (dec && +f ? "." + f : ""); };
-// reads balanceOf/decimals straight from Robinhood Chain RPC, whatever network the wallet is on
-const rpc = (method, params) => fetch(CH.rpc, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params }) })
-  .then(r => r.json()).then(r => { if (r.error) throw new Error(r.error.message); return r.result; });
 async function tokBalance() {
-  if (!wallet || !CA) return null;
-  const q = [{ to: CA, data: "0x70a08231" + wallet.addr.slice(2).toLowerCase().padStart(64, "0") }, { to: CA, data: "0x313ce567" }];
-  let out;
-  try { out = await Promise.all(q.map(t => rpc("eth_call", [t, "latest"]))); }
-  catch { // fallback: read through the wallet when it is on Robinhood Chain
-    if ((await window.ethereum?.request({ method: "eth_chainId" }))?.toLowerCase() !== CHAIN_HEX) throw new Error("rpc");
-    out = await Promise.all(q.map(t => window.ethereum.request({ method: "eth_call", params: [t, "latest"] })));
+  const ca = caOf(chain);
+  if (!wallet || !ca) return null;
+  if (chain === "sol") {
+    if (wallet.type !== "sol") return null;
+    const r = await fetch(C.rpc.sol, { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "getTokenAccountsByOwner", params: [wallet.addr, { mint: ca }, { encoding: "jsonParsed" }] }) }).then(r => r.json());
+    const accs = r.result?.value || [];
+    const dec = accs[0]?.account.data.parsed.info.tokenAmount.decimals ?? 0;
+    return fmtUnits(accs.reduce((s, a) => s + BigInt(a.account.data.parsed.info.tokenAmount.amount), 0n), dec);
   }
-  return fmtUnits(BigInt(out[0]), Number(BigInt(out[1])));
+  if (wallet.type !== "evm") return null;
+  const eth = window.ethereum;
+  if ((await eth.request({ method: "eth_chainId" })).toLowerCase() !== EVM_IDS[chain]) return null;
+  const call = data => eth.request({ method: "eth_call", params: [{ to: ca, data }, "latest"] });
+  const [raw, dec] = await Promise.all([call("0x70a08231" + wallet.addr.slice(2).toLowerCase().padStart(64, "0")), call("0x313ce567")]);
+  return fmtUnits(BigInt(raw), Number(BigInt(dec)));
 }
 async function renderTok() {
+  $("#tokChain").textContent = "GAME5 · " + chainOf(chain).symbol;
   const el = $("#tokBal"); el.textContent = "…";
   try { el.textContent = (await tokBalance()) ?? "—"; } catch { el.textContent = "—"; }
 }
@@ -52,16 +60,33 @@ async function roll() {
 }
 async function showSeed() { $("#mSeed").textContent = `seed hash ${(await sha256(fair.server)).slice(0, 16)}… · nonce ${fair.nonce}`; }
 
-/* ---------- contract & buy ---------- */
-$("#caList").innerHTML = `<div class="ca"><span class="n"><i style="background:#ccff00"></i>Robinhood</span><code>${CA || "Coming soon"}</code>${CA ? `<button data-a="${CA}">Copy</button><a href="${CH.explorer}/token/${CA}" target="_blank" rel="noopener"><button>↗</button></a>` : ""}</div>`;
-const heroCA = $("#heroCA");
-if (CA) { heroCA.innerHTML = `CA: <code>${CA.slice(0, 6)}…${CA.slice(-4)}</code> <b>⧉ Copy</b>`; heroCA.onclick = () => navigator.clipboard.writeText(CA).then(() => toast("Contract address copied")); }
-else heroCA.remove();
+/* ---------- render static ---------- */
+const chip = c => `<span class="chip"><i style="background:${c.color}"></i>${c.name}</span>`;
+$("#heroChains").innerHTML = C.chains.map(chip).join("");
+$("#chainCards").innerHTML = C.chains.map(c => `<div class="card chain-c" style="--c:${c.color}"><div class="ic">${c.symbol}</div><h3>${c.name}</h3><p>Native rewards, ${c.id === "sol" ? "Phantom & Solflare" : "any EVM wallet"}.</p></div>`).join("");
+function renderTabs() {
+  $("#chainTabs").innerHTML = C.chains.map(c => `<button data-c="${c.id}" class="${c.id === chain ? "on" : ""}"><i style="background:${c.color}"></i>${c.name}</button>`).join("");
+}
+$("#chainTabs").onclick = e => { const b = e.target.closest("button"); if (!b) return; chain = b.dataset.c; store.set("chain", chain); renderTabs(); renderBal(); switchEvm().then(renderTok); };
+
+// CA
+function renderCA() {
+  $("#caList").innerHTML = C.chains.map(c => {
+    const a = caOf(c.id);
+    return `<div class="ca"><span class="n"><i style="background:${c.color}"></i>${c.name}</span><code>${a || "Coming soon"}</code>${a ? `<button data-a="${a}">Copy</button>${c.explorer ? `<a class="ca-btn" href="${c.explorer}${a}" target="_blank" rel="noopener"><button>↗</button></a>` : ""}` : ""}</div>`;
+  }).join("");
+}
 $("#caList").onclick = e => { const a = e.target.dataset.a; if (a) navigator.clipboard.writeText(a).then(() => toast("Contract address copied")); };
-document.querySelectorAll("[data-buy]").forEach(b => {
-  if (CA) b.href = C.buy.replace("{ca}", CA);
-  else { b.removeAttribute("href"); b.textContent = "Launching soon"; b.style.opacity = .6; }
-});
+// buy popup (Uniswap per chain)
+$("#buyList").innerHTML = C.chains.map(c => {
+  const a = caOf(c.id), url = a && C.buy[c.id] ? C.buy[c.id].replace("{ca}", a) : "";
+  return url
+    ? `<a class="buy-opt" href="${url}" target="_blank" rel="noopener"><i style="background:${c.color}">${c.symbol}</i><span><b>${c.name}</b><small>Uniswap</small></span><em>→</em></a>`
+    : `<div class="buy-opt off"><i style="background:${c.color}">${c.symbol}</i><span><b>${c.name}</b><small>Coming soon</small></span></div>`;
+}).join("");
+const buyModal = $("#buyModal");
+document.querySelectorAll("#buyBtn,[data-buy]").forEach(b => b.onclick = () => buyModal.hidden = false);
+buyModal.onclick = e => { if (e.target === buyModal || e.target.closest("[data-close]")) buyModal.hidden = true; };
 
 /* ---------- stats & feed ---------- */
 function renderStats() {
@@ -74,7 +99,7 @@ function settle(game, bet, mult) {
   const pay = bet * mult, win = mult > 0;
   setBal(bal() + pay);
   stats.rounds++; stats.wagered += bet; stats.won += pay; if (mult > stats.best) stats.best = mult;
-  feed.unshift({ g: game, c: "RH", w: win, p: pay, m: mult, b: bet }); feed = feed.slice(0, 20);
+  feed.unshift({ g: game, c: chainOf(chain).symbol, w: win, p: pay, m: mult, b: bet }); feed = feed.slice(0, 20);
   store.set("stats", stats); store.set("feed", feed); renderStats(); showSeed();
   const m = $("#mMsg"); m.className = "m-msg " + (win ? "w" : "l");
   m.textContent = win ? `WIN +${fmt(pay)} (${fmt(mult)}×)` : `LOSS −${fmt(bet)}`;
@@ -82,23 +107,24 @@ function settle(game, bet, mult) {
 
 /* ---------- wallet ---------- */
 const short = a => a.slice(0, 6) + "…" + a.slice(-4);
-async function ensureChain() {
-  const eth = window.ethereum; if (!eth) return;
-  try { await eth.request({ method: "wallet_switchEthereumChain", params: [{ chainId: CHAIN_HEX }] }); }
-  catch (e) {
-    if (e.code !== 4902 && e?.data?.originalError?.code !== 4902) return;
-    await eth.request({ method: "wallet_addEthereumChain", params: [{ chainId: CHAIN_HEX, chainName: CH.name, nativeCurrency: CH.currency, rpcUrls: [CH.rpc], blockExplorerUrls: [CH.explorer] }] }).catch(() => {});
-  }
+async function switchEvm() {
+  if (!wallet || wallet.type !== "evm" || !EVM_IDS[chain]) return;
+  try { await window.ethereum.request({ method: "wallet_switchEthereumChain", params: [{ chainId: EVM_IDS[chain] }] }); } catch {}
 }
 $("#connectBtn").onclick = async () => {
   try {
-    if (!window.ethereum) return window.open("https://metamask.io/download/", "_blank");
-    const [a] = await window.ethereum.request({ method: "eth_requestAccounts" });
-    wallet = { addr: a }; await ensureChain();
+    if (chain === "sol") {
+      const p = window.phantom?.solana || window.solana;
+      if (!p) return window.open("https://phantom.app/", "_blank");
+      const r = await p.connect(); wallet = { type: "sol", addr: r.publicKey.toString() };
+    } else {
+      if (!window.ethereum) return window.open("https://metamask.io/download/", "_blank");
+      const [a] = await window.ethereum.request({ method: "eth_requestAccounts" });
+      wallet = { type: "evm", addr: a }; await switchEvm();
+    }
     $("#connectBtn").textContent = short(wallet.addr); toast("Wallet connected"); renderTok();
   } catch (e) { toast(e?.message?.slice(0, 80) || "Connection cancelled"); }
 };
-$("#addChainBtn").onclick = () => window.ethereum ? ensureChain().then(() => toast("Robinhood Chain ready")) : window.open("https://metamask.io/download/", "_blank");
 
 /* ---------- games ---------- */
 const GAMES = [
@@ -231,7 +257,7 @@ const G = {
 };
 
 function open(id) {
-  cur = G[id]; $("#mTitle").textContent = GAMES.find(g => g.id === id).name + " · Robinhood Chain";
+  cur = G[id]; $("#mTitle").textContent = GAMES.find(g => g.id === id).name + " · " + chainOf(chain).name;
   $("#mMsg").textContent = ""; playBtn.textContent = "Play"; playBtn.disabled = false;
   cur.ui(); showSeed(); $("#modal").hidden = false;
 }
@@ -248,6 +274,6 @@ $("#closeModal").onclick = () => { if (G.mines.live) G.mines.cash(); $("#modal")
 $("#modal").onclick = e => { if (e.target.id === "modal") $("#closeModal").onclick(); };
 
 window.ethereum?.on?.("chainChanged", renderTok);
-window.ethereum?.on?.("accountsChanged", a => { if (wallet) { if (!a[0]) { wallet = null; $("#connectBtn").textContent = "Connect Wallet"; } else { wallet.addr = a[0]; $("#connectBtn").textContent = short(a[0]); } renderTok(); } });
-renderBal(); renderStats(); renderTok();
+window.ethereum?.on?.("accountsChanged", a => { if (wallet?.type === "evm") { if (!a[0]) { wallet = null; $("#connectBtn").textContent = "Connect Wallet"; } else { wallet.addr = a[0]; $("#connectBtn").textContent = short(a[0]); } renderTok(); } });
+renderTabs(); renderBal(); renderCA(); renderStats(); renderTok();
 })();

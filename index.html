@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Game5 — Play. Win. Earn on Robinhood Chain</title>
-<meta name="description" content="Game5 is an on-chain gaming platform on Robinhood Chain. Play provably-fair games and earn $GAME5.">
-<meta property="og:title" content="Game5 — Play. Win. Earn on Robinhood Chain">
-<meta property="og:description" content="Provably-fair games with $GAME5 rewards on Robinhood Chain.">
+<title>Game5 — Play. Win. Earn on 5 Chains</title>
+<meta name="description" content="Game5 is a multichain gaming network with on-chain rewards on Ethereum, Solana, Robinhood Chain, Base and BNB Chain. $GAME5">
+<meta property="og:title" content="Game5 — Play. Win. Earn on 5 Chains">
+<meta property="og:description" content="Skill & luck games with rewards on ETH, SOL, Robinhood, Base and BSC. $GAME5">
 <meta property="og:url" content="https://game5.fun">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@Game5Fun">
@@ -19,62 +19,58 @@
 <header class="nav">
   <a href="#" class="brand"><img src="assets/logo.svg" alt=""><b>GAME<span>5</span></b></a>
   <nav class="links">
-    <a href="#games">Games</a><a href="#chain">Robinhood Chain</a><a href="#token">$GAME5</a><a href="#roadmap">Roadmap</a><a href="#faq">FAQ</a>
+    <a href="#games">Games</a><a href="#chains">Chains</a><a href="#token">$GAME5</a><a href="#roadmap">Roadmap</a><a href="#faq">FAQ</a>
   </nav>
   <div class="nav-r">
-    <div class="bal" title="$GAME5 wallet balance"><span>GAME5</span> <b id="tokBal">—</b></div>
+    <div class="bal" title="$GAME5 wallet balance"><span id="tokChain">GAME5</span> <b id="tokBal">—</b></div>
     <button class="btn" id="connectBtn">Connect Wallet</button>
   </div>
 </header>
 
 <section class="hero">
   <div class="hero-txt">
-    <div class="pill">● LIVE ON ROBINHOOD CHAIN</div>
+    <div class="pill">● LIVE ON 5 NETWORKS</div>
     <h1>Play games.<br><em>Win on-chain.</em></h1>
-    <p>Game5 turns provably-fair games into real on-chain rewards on Robinhood Chain — fast, low-cost, and powered by one token: <b>$GAME5</b>.</p>
-    <div class="cta"><a href="#games" class="btn big">Start Playing</a><a class="btn ghost big" data-buy target="_blank" rel="noopener">Buy $GAME5</a></div>
-    <div class="hero-chains"><span class="chip"><i style="background:#ccff00"></i>Robinhood Chain · ID 4663</span><span class="chip"><i style="background:#14f195"></i>Gas paid in ETH</span><button class="chip ca-chip" id="heroCA" title="Copy contract address"></button></div>
+    <p>Game5 turns provably-fair games into real rewards across Ethereum, Solana, Robinhood Chain, Base and BNB Chain — one account, five networks, one token: <b>$GAME5</b>.</p>
+    <div class="cta"><a href="#games" class="btn big">Start Playing</a><button class="btn ghost big" data-buy>Buy $GAME5</button></div>
+    <div class="hero-chains" id="heroChains"></div>
   </div>
   <div class="hero-art">
     <div class="cube"><div>5</div></div>
-    <div class="orbit"><span></span><span></span><span></span></div>
+    <div class="orbit"><span></span><span></span><span></span><span></span><span></span></div>
   </div>
 </section>
 
 <section class="ticker"><div class="ticker-track" id="feed"><span>Recent wins appear here as players play</span></div></section>
 
 <section id="games" class="wrap">
-  <div class="sec-h"><h2>Games</h2><p>Pick a game and play on Robinhood Chain.</p></div>
+  <div class="sec-h"><h2>Games</h2><p>Pick a network, pick a game, play.</p></div>
+  <div class="chain-tabs" id="chainTabs"></div>
   <div class="grid games" id="gameGrid"></div>
 </section>
 
 <section id="how" class="wrap">
   <div class="sec-h"><h2>How it works</h2></div>
   <div class="grid steps">
-    <div class="card step"><i>01</i><h3>Connect</h3><p>MetaMask, Rabby, Coinbase Wallet or any EVM wallet.</p></div>
-    <div class="card step"><i>02</i><h3>Switch to Robinhood</h3><p>Game5 adds Robinhood Chain to your wallet in one click.</p></div>
+    <div class="card step"><i>01</i><h3>Connect</h3><p>MetaMask, Rabby, Coinbase Wallet for EVM chains — Phantom for Solana.</p></div>
+    <div class="card step"><i>02</i><h3>Choose a chain</h3><p>Play on ETH, SOL, Robinhood, Base or BSC. Same games, same odds.</p></div>
     <div class="card step"><i>03</i><h3>Play</h3><p>Every round uses a verifiable seed so results can be checked.</p></div>
     <div class="card step"><i>04</i><h3>Earn $GAME5</h3><p>Wins, streaks and daily quests feed the $GAME5 reward pool.</p></div>
   </div>
 </section>
 
-<section id="chain" class="wrap">
-  <div class="sec-h"><h2>Built on Robinhood Chain</h2><p>An Ethereum L2 built for speed and low fees — every Game5 reward settles here.</p></div>
-  <div class="grid chains">
-    <div class="card chain-c" style="--c:#ccff00"><div class="ic">ID</div><h3>Chain ID 4663</h3><p>EVM-compatible — works with any Ethereum wallet.</p></div>
-    <div class="card chain-c" style="--c:#14f195"><div class="ic">ETH</div><h3>Gas in ETH</h3><p>Low-cost transactions with Ethereum security.</p></div>
-    <div class="card chain-c" style="--c:#3b7bff"><div class="ic">⛓</div><h3>Explorer</h3><p><a href="https://robinhoodchain.blockscout.com" target="_blank" rel="noopener">robinhoodchain.blockscout.com</a></p></div>
-    <div class="card chain-c" style="--c:#8a92ff"><div class="ic">+</div><h3>Add network</h3><p><button class="btn ghost" id="addChainBtn">Add to wallet</button></p></div>
-  </div>
+<section id="chains" class="wrap">
+  <div class="sec-h"><h2>5 Chains. One Network.</h2><p>Rewards are paid natively on every supported chain.</p></div>
+  <div class="grid chains" id="chainCards"></div>
 </section>
 
 <section id="token" class="wrap">
   <div class="sec-h"><h2>$GAME5 Token</h2><p>The fuel of the Game5 Network.</p></div>
   <div class="token">
     <div class="card">
-      <h3>Contract Address · Robinhood Chain</h3>
+      <h3>Contract Addresses</h3>
       <div id="caList"></div>
-      <div class="cta"><a class="btn" id="buyBtn" data-buy target="_blank" rel="noopener">Buy on Uniswap</a><a class="btn ghost" href="https://x.com/Game5Fun" target="_blank" rel="noopener">Follow @Game5Fun</a></div>
+      <div class="cta"><button class="btn" id="buyBtn">Buy $GAME5</button><a class="btn ghost" href="https://x.com/Game5Fun" target="_blank" rel="noopener">Follow @Game5Fun</a></div>
     </div>
     <div class="card utility">
       <h3>Utility</h3>
@@ -82,7 +78,7 @@
         <li><b>Rewards</b> — prizes and quest payouts in $GAME5</li>
         <li><b>Boosts</b> — hold $GAME5 for higher reward multipliers</li>
         <li><b>Tournaments</b> — entry tickets and prize pools</li>
-        <li><b>Governance</b> — vote on new games and features</li>
+        <li><b>Governance</b> — vote on new games and chains</li>
         <li><b>Revenue share</b> — stakers share protocol fees</li>
       </ul>
     </div>
@@ -98,28 +94,28 @@
   <div class="sec-h"><h2>Roadmap</h2><p>Five months from launch to the full Game5 Network.</p></div>
   <div class="road">
     <div class="road-line"><div class="road-fill"></div></div>
-    <div class="phase now"><div class="dot"></div><span class="tag">Month 1</span><h3>November 2026</h3><ul><li>Website & brand launch</li><li>Game lobby: Dice, Flip, Crash, Mines, Wheel</li><li>Robinhood Chain wallet connect</li><li>$GAME5 launch on Robinhood Chain</li></ul></div>
-    <div class="phase"><div class="dot"></div><span class="tag">Month 2</span><h3>December 2026</h3><ul><li>Reward contracts on Robinhood Chain</li><li>On-chain prize claims</li><li>Provably-fair verifier page</li><li>Daily quests & streaks</li></ul></div>
+    <div class="phase now"><div class="dot"></div><span class="tag">Month 1</span><h3>November 2026</h3><ul><li>Website & brand launch</li><li>Game lobby: Dice, Flip, Crash, Mines, Wheel</li><li>Multichain wallet connect</li><li>$GAME5 launch on ETH, SOL, Robinhood, Base, BSC</li></ul></div>
+    <div class="phase"><div class="dot"></div><span class="tag">Month 2</span><h3>December 2026</h3><ul><li>Reward contracts on EVM chains</li><li>Solana reward program</li><li>Provably-fair verifier page</li><li>Daily quests & streaks</li></ul></div>
     <div class="phase"><div class="dot"></div><span class="tag">Month 3</span><h3>January 2027</h3><ul><li>Global leaderboards</li><li>Weekly tournaments & prize pools</li><li>Referral program</li><li>Plinko release</li></ul></div>
     <div class="phase"><div class="dot"></div><span class="tag">Month 4</span><h3>February 2027</h3><ul><li>$GAME5 staking & revenue share</li><li>Holder reward boosts</li><li>PvP Poker & Racing</li><li>Partner game integrations</li></ul></div>
-    <div class="phase"><div class="dot"></div><span class="tag">Month 5</span><h3>March 2027</h3><ul><li>Mobile app (iOS & Android)</li><li>DAO governance votes</li><li>NFT achievements & badges</li><li>Game5 Network SDK</li></ul></div>
+    <div class="phase"><div class="dot"></div><span class="tag">Month 5</span><h3>March 2027</h3><ul><li>Mobile app (iOS & Android)</li><li>DAO governance votes</li><li>Cross-chain reward bridge</li><li>Game5 Network SDK</li></ul></div>
   </div>
 </section>
 
 <section id="faq" class="wrap">
   <div class="sec-h"><h2>FAQ</h2></div>
   <div class="faq">
-    <details><summary>What is Game5?</summary><p>A gaming network where players play fast, verifiable games and earn rewards on Robinhood Chain, powered by the $GAME5 token.</p></details>
-    <details><summary>Which wallets are supported?</summary><p>Any EVM wallet (MetaMask, Rabby, Coinbase Wallet, OKX). Game5 prompts your wallet to add Robinhood Chain (chain ID 4663) automatically.</p></details>
+    <details><summary>What is Game5?</summary><p>A gaming network where players play fast, verifiable games and earn rewards on five blockchains, powered by the $GAME5 token.</p></details>
+    <details><summary>Which wallets are supported?</summary><p>Any injected EVM wallet (MetaMask, Rabby, Coinbase Wallet, OKX) for Ethereum, Robinhood Chain, Base and BSC; Phantom or Solflare for Solana.</p></details>
     <details><summary>Are games fair?</summary><p>Each round derives its result from a server seed, client seed and nonce. The seed hash is shown before you play so the result can be verified afterwards.</p></details>
-    <details><summary>Where is the contract address?</summary><p>The official CA is listed in the $GAME5 section and announced only on <a href="https://x.com/Game5Fun" target="_blank" rel="noopener">@Game5Fun</a>. Ignore any other source.</p></details>
+    <details><summary>Where is the contract address?</summary><p>Official CAs are listed in the $GAME5 section and announced only on <a href="https://x.com/Game5Fun" target="_blank" rel="noopener">@Game5Fun</a>. Ignore any other source.</p></details>
     <details><summary>Is there an age or region restriction?</summary><p>You must be of legal age and allowed to play games of chance where you live. Play responsibly.</p></details>
   </div>
 </section>
 
 <footer>
   <div class="brand"><img src="assets/logo.svg" alt=""><b>GAME<span>5</span></b></div>
-  <p>Play. Win. Earn — on Robinhood Chain.</p>
+  <p>Play. Win. Earn — on 5 chains.</p>
   <div class="f-links"><a href="https://x.com/Game5Fun" target="_blank" rel="noopener">X / Twitter</a><a href="#token">$GAME5</a><a href="#roadmap">Roadmap</a></div>
   <small>© 2026 Game5 Network. Crypto assets are volatile; nothing here is financial advice. 18+ · Play responsibly.</small>
 </footer>
@@ -139,6 +135,16 @@
       </div>
       <div class="m-stage" id="gStage"></div>
     </div>
+  </div>
+</div>
+<!-- Buy modal -->
+<div class="modal" id="buyModal" hidden>
+  <div class="modal-box buy-box">
+    <button class="x" data-close>✕</button>
+    <h3>Buy $GAME5</h3>
+    <p class="sub">Choose a network — swap on Uniswap.</p>
+    <div class="buy-list" id="buyList"></div>
+    <small class="sub">Always verify the contract address before swapping.</small>
   </div>
 </div>
 <div class="toast" id="toast"></div>
