@@ -4,7 +4,7 @@ window.GAME5_CONFIG = {
     name: "Game5",
     ticker: "GAME5",
     // $GAME5 contract address on Robinhood Chain. Leave "" to show "Coming soon".
-    contract: "0x53Fa0B2F1c9cEa673D065086638d8BEA010c36Ea"
+    contract: ""
   },
   links: {
     x: "https://x.com/Game5Fun",
