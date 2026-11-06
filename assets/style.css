@@ -193,3 +193,4 @@ a.buy-opt:hover{border-color:var(--ac);transform:translateX(4px)}
 .buy-opt em{font-style:normal;color:var(--ac);font-size:1.2rem}
 .buy-opt.off{opacity:.5}
 .road-fill{width:6%}
+.x-btn{padding-inline:18px}
