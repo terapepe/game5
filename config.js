@@ -16,11 +16,11 @@ window.GAME5_CONFIG = {
   },
   // Uniswap buy links per chain. {ca} is replaced with the matching contract address.
   buy: {
-    eth:       "https://app.uniswap.org/swap?chain=mainnet&outputCurrency={ca}",
-    base:      "https://app.uniswap.org/swap?chain=base&outputCurrency={ca}",
-    bsc:       "https://app.uniswap.org/swap?chain=bnb&outputCurrency={ca}",
-    robinhood: "https://app.uniswap.org/swap?chain=robinhood&outputCurrency={ca}",
-    sol:       "https://app.uniswap.org/swap?chain=solana&outputCurrency={ca}"
+    eth:       "https://www.pangea.trade/app/t/{ca}",
+    base:      "https://www.pangea.trade/app/t/{ca}",
+    bsc:       "https://www.pangea.trade/app/t/{ca}",
+    robinhood: "https://www.pangea.trade/app/t/{ca}",
+    sol:       "https://www.pangea.trade/app/t/{ca}"
   },
   // RPC used to read $GAME5 balances on Solana (switch to a private RPC such as Helius if rate-limited)
   rpc: { sol: "https://api.mainnet-beta.solana.com" },
