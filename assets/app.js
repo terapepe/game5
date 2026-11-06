@@ -54,6 +54,9 @@ async function showSeed() { $("#mSeed").textContent = `seed hash ${(await sha256
 
 /* ---------- contract & buy ---------- */
 $("#caList").innerHTML = `<div class="ca"><span class="n"><i style="background:#ccff00"></i>Robinhood</span><code>${CA || "Coming soon"}</code>${CA ? `<button data-a="${CA}">Copy</button><a href="${CH.explorer}/token/${CA}" target="_blank" rel="noopener"><button>↗</button></a>` : ""}</div>`;
+const heroCA = $("#heroCA");
+if (CA) { heroCA.innerHTML = `CA: <code>${CA.slice(0, 6)}…${CA.slice(-4)}</code> <b>⧉ Copy</b>`; heroCA.onclick = () => navigator.clipboard.writeText(CA).then(() => toast("Contract address copied")); }
+else heroCA.remove();
 $("#caList").onclick = e => { const a = e.target.dataset.a; if (a) navigator.clipboard.writeText(a).then(() => toast("Contract address copied")); };
 document.querySelectorAll("[data-buy]").forEach(b => {
   if (CA) b.href = C.buy.replace("{ca}", CA);

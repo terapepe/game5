@@ -193,3 +193,10 @@ a.buy-opt:hover{border-color:var(--ac);transform:translateX(4px)}
 .buy-opt em{font-style:normal;color:var(--ac);font-size:1.2rem}
 .buy-opt.off{opacity:.5}
 .road-fill{width:6%}
+
+.ca-chip{font:inherit;font-size:.8rem;color:var(--tx);cursor:pointer;border-color:#ccff0066;transition:.2s}
+.ca-chip:hover{border-color:var(--ac);background:#ccff0012}
+.ca-chip code{font-family:"JetBrains Mono",monospace;color:var(--mut)}
+.ca-chip b{color:var(--ac);font-weight:600}
+.token>.card{min-width:0}
+.ca code{min-width:0}
