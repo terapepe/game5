@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Game5 App — Explore game tokens</title>
+<meta name="description" content="Explore, trade and launch game tokens on Ethereum, Base, Robinhood, BNB Chain and Solana.">
+<meta name="theme-color" content="#09090a">
+<link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="app" id="app">
+  <aside class="side" id="side">
+    <a href="/" class="brand"><img src="assets/logo.svg" alt=""><b>GAME<span>5</span></b></a>
+    <nav id="nav">
+      <a href="#/explore" data-r="explore"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></svg>Explore</a>
+      <a href="#/create" data-r="create"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="M12 8v8M8 12h8"/></svg>Create Token</a>
+      <a href="#/live" data-r="live"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 20h18M6 16v-5M11 16V6M16 16v-8M21 16v-3"/></svg>Live Data</a>
+      <a href="#/docs" data-r="docs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3h10l4 4v14H5z"/><path d="M9 12h6M9 16h6M14 3v5h5"/></svg>Docs</a>
+      <a href="/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 11 9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>Home</a>
+    </nav>
+    <a class="btn ac create" href="#/create">+ Launch a token</a>
+    <div class="ca-box">
+      <h4>$GAME5 contract <span class="badge" style="font-size:.58rem">Official</span></h4>
+      <div id="sideCA"></div>
+      <a class="btn" id="sideBuy" target="_blank" rel="noopener">Buy $GAME5</a>
+    </div>
+    <div class="mini-links"><a id="sideX" target="_blank" rel="noopener">X / Twitter</a><a href="#/docs">Docs</a><a href="/">game5.fun</a></div>
+  </aside>
+  <div class="main">
+    <header class="top">
+      <button class="btn ghost sq menu-btn" id="menuBtn" aria-label="Menu">☰</button>
+      <label class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" placeholder="Search game, ticker or contract"></label>
+      <div class="r">
+        <span class="net-pill"><i style="width:7px;height:7px;border-radius:50%;background:var(--ac)"></i>Testnet</span>
+        <a class="btn ghost sq" id="topX" target="_blank" rel="noopener" aria-label="Game5 on X"><svg class="x-ico" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+        <button class="btn" id="walletBtn">Connect Wallet</button>
+      </div>
+    </header>
+    <main class="page" id="page"></main>
+  </div>
+</div>
+
+<!-- wallet chooser -->
+<div id="wModal" class="wmodal" hidden>
+  <div class="card wbox">
+    <h3>Connect wallet</h3>
+    <button class="wopt" data-w="evm"><span>🦊</span><div><b>EVM wallet</b><small>MetaMask, Rabby, Coinbase · ETH, Base, Robinhood, BSC</small></div></button>
+    <button class="wopt" data-w="sol"><span>👻</span><div><b>Solana wallet</b><small>Phantom, Solflare · Solana</small></div></button>
+    <button class="btn ghost" data-w="close" style="width:100%;margin-top:6px">Cancel</button>
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script src="assets/core.js"></script>
+<script src="assets/tokens.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
