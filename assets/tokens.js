@@ -36,7 +36,7 @@ window.G5_TOKENS = (() => {
     const mcap = Math.round(2000 * Math.exp(Math.pow(r(), 1.2) * Math.log(110000 / 2000))); // $2K – $110K
     const price = mcap / SUPPLY;
     const liquidity = Math.round(mcap * (0.06 + r() * 0.22));
-    const volume = Math.round(Math.min(68000, mcap * Math.pow(r(), 1.5) * 1.6));       // $0 – $68K
+    const volume = Math.round(68000 * Math.pow(r(), 1.3) * Math.min(1, 0.25 + mcap / 110000)); // $0 – $68K
     const change = (r() - 0.42) * (r() < 0.2 ? 260 : 60);
     const holders = Math.round(40 + Math.sqrt(mcap) * (0.6 + r() * 2.2));
     const txns = Math.round(volume / (60 + r() * 400));
