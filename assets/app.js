@@ -305,7 +305,7 @@ function Live() {
   const grad = T.filter(t => t.graduated).length;
   const byChain = C.chains.map(c => { const l = T.filter(t => t.chain === c.id); return { c, n: l.length, vol: sum("volume", l), liq: sum("liquidity", l), mc: sum("mcap", l) }; });
   const genres = Object.entries(T.reduce((m, t) => (m[t.genre] = (m[t.genre] || 0) + 1, m), {})).sort((a, b) => b[1] - a[1]).slice(0, 8);
-  const days = Array.from({ length: 14 }, (_, i) => { const end = Date.now() - (13 - i) * 864e5, st = end - 864e5; return { d: new Date(end), n: T.filter(t => t.createdAt > st && t.createdAt <= end).length }; });
+  const B = 3 * 36e5, days = Array.from({ length: 24 }, (_, i) => { const end = Date.now() - (23 - i) * B, st = end - B; return { d: new Date(end), n: T.filter(t => t.createdAt > st && t.createdAt <= end).length }; });
   const maxD = Math.max(1, ...days.map(d => d.n));
   const top = (k, dir = 1) => [...T].sort((a, b) => dir * (b[k] - a[k])).slice(0, 5);
   const bars = (rows, val, fmt) => { const mx = Math.max(...rows.map(val)); return `<div class="bars">${rows.map(r => `<div class="b"><span>${r.label}</span><span class="t"><i style="width:${val(r) / mx * 100}%;--c:${r.color || "var(--ac)"}"></i></span><span>${fmt(val(r))}</span></div>`).join("")}</div>`; };
@@ -318,9 +318,9 @@ function Live() {
       .map(([k, v, s]) => `<div class="card kpi"><span>${k}</span><b>${v}</b><small class="mut">${s}</small></div>`).join("")}
   </div>
   <div class="ld-grid">
-    <div class="card"><h3>Tokens launched per day <small>last 14 days</small></h3>
-      <div class="cols">${days.map(d => `<div style="height:${d.n / maxD * 100}%" title="${d.d.toLocaleDateString("en-US", { month: "short", day: "numeric" })}: ${d.n}"></div>`).join("")}</div>
-      <div class="cols-x"><span>${days[0].d.toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span><span>Today</span></div></div>
+    <div class="card"><h3>Tokens launched <small>last 72h · 3h intervals</small></h3>
+      <div class="cols">${days.map(d => `<div style="height:${d.n / maxD * 100}%" title="${d.d.toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric" })}: ${d.n} tokens"></div>`).join("")}</div>
+      <div class="cols-x"><span>72h ago</span><span>48h</span><span>24h</span><span>Now</span></div></div>
     <div class="card"><h3>Volume by chain <small>24h</small></h3>${bars(byChain.map(b => ({ ...b, label: b.c.name, color: b.c.color })), r => r.vol, usd)}
       <h3 style="margin-top:22px">Liquidity by chain</h3>${bars(byChain.map(b => ({ ...b, label: b.c.name, color: b.c.color })), r => r.liq, usd)}</div>
   </div>

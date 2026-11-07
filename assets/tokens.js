@@ -32,7 +32,7 @@ window.G5_TOKENS = (() => {
 
   return LIST.map(([name, ticker, icon, genre, platform], i) => {
     const chain = CHAINS[i % 5 === 0 ? Math.floor(r() * 5) : (i * 3 + Math.floor(r() * 2)) % 5];
-    const age = Math.pow(r(), 1.8) * 30 * 24 * HOUR;              // up to 30 days old
+    const age = Math.pow(r(), 1.3) * 3 * 24 * HOUR;               // 0h – 3 days old
     const mcap = Math.round(2000 * Math.exp(Math.pow(r(), 1.2) * Math.log(110000 / 2000))); // $2K – $110K
     const price = mcap / SUPPLY;
     const liquidity = Math.round(mcap * (0.06 + r() * 0.22));
