@@ -272,16 +272,17 @@ function Create() {
   };
 }
 let feeSeq = 0;
+const FEE_USD = +(C.launch.feeUsdMin + Math.random() * (C.launch.feeUsdMax - C.launch.feeUsdMin)).toFixed(2);
 async function fee() {
   const box = $("#feeBox"); if (!box) return;
   const L = C.launch, c = chain(draft.chain), seq = ++feeSeq, w = G5.wallet;
   const pr = await G5.prices(), p = pr[c.cg]?.usd;
-  const nat = p ? (L.feeUsd / p).toPrecision(2) + " " + c.native : "";
-  const paidLine = `<div class="amt">${nat || "$" + L.feeUsd.toFixed(2)}</div><p>≈ $${L.feeUsd.toFixed(2)} (range $${L.feeUsdRange}) paid in ${c.native} on ${c.name}${p ? ` · 1 ${c.native} = ${usd(p)}` : ""}</p>`;
+  const nat = p ? (FEE_USD / p).toPrecision(2) + " " + c.native : "";
+  const paidLine = `<div class="amt">${nat || "$" + FEE_USD.toFixed(2)}</div><p>≈ $${FEE_USD.toFixed(2)} paid in ${c.native} on ${c.name}${p ? ` · 1 ${c.native} = ${usd(p)}` : ""}</p>`;
   if (!w) {
     box.innerHTML = `<div class="fee-box"><h4>🔌 Connect wallet to check your $GAME5</h4><p>Hold ${num(L.holdForFree)} $GAME5 and launching is free.</p>${paidLine}<button class="btn ghost" style="margin-top:12px;width:100%" id="feeConnect">Connect Wallet</button></div>`;
     $("#feeConnect").onclick = () => wModal.hidden = false;
-    $("#sumFee").textContent = nat || "$" + L.feeUsd; return;
+    $("#sumFee").textContent = nat || "$" + FEE_USD.toFixed(2); return;
   }
   box.innerHTML = `<div class="fee-box"><h4>Checking your $GAME5 balance…</h4><p>${short(w.addr)}</p></div>`;
   const h = await G5.game5Holdings(w).catch(() => null);
@@ -293,7 +294,7 @@ async function fee() {
   } else {
     const msg = !h || !h.ok ? "Couldn't read your $GAME5 balance right now." : `You hold ${num(h.total)} $GAME5 — ${num(L.holdForFree - h.total)} more for free launches.`;
     box.innerHTML = `<div class="fee-box paid"><h4>💳 Launch fee applies</h4><p>${msg}</p>${paidLine}${per}<a class="btn ghost" style="margin-top:12px;width:100%" href="${buyUrl()}" target="_blank" rel="noopener">Buy $GAME5 to launch free</a></div>`;
-    $("#sumFee").textContent = nat || "$" + L.feeUsd;
+    $("#sumFee").textContent = nat || "$" + FEE_USD.toFixed(2);
   }
 }
 G5.onWallet(() => { if (location.hash.startsWith("#/create")) fee(); if (location.hash.startsWith("#/token")) render.keepScroll = true, render(); });

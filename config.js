@@ -17,7 +17,8 @@ window.GAME5_CONFIG = {
   },
   launch: {
     holdForFree: 10000000,   // hold this many $GAME5 to create tokens for free
-    feeUsd: 0.75,            // otherwise this fee (USD) is charged in the chain's native coin (0.5 ~ 1 USD)
+    feeUsdMin: 0.5,          // otherwise a fee picked at random between min and max (USD)
+    feeUsdMax: 1,            // is charged in the chain's native coin
     feeUsdRange: "0.50 – 1.00",
     totalSupply: 1000000000  // fixed supply of every token launched on Game5
   },
