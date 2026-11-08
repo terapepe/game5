@@ -17,7 +17,7 @@
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
-<div class="annc"><span>$GAME5 is live on 5 chains</span><a id="annBuy" href="#" target="_blank" rel="noopener">Trade $GAME5 →</a></div>
+<div class="annc"><span data-single="$GAME5 is live on {chain}">$GAME5 is live on 5 chains</span><a id="annBuy" href="#" target="_blank" rel="noopener">Trade $GAME5 →</a></div>
 <header class="hnav">
   <a href="/" class="brand"><img src="assets/logo.svg" alt=""><b>GAME<span>5</span></b></a>
   <nav class="links">
@@ -31,8 +31,8 @@
 
 <section class="hero">
   <span class="badge">Launchpad for game tokens</span>
-  <h1 style="margin-top:22px">One game,<br>five chains, <em>one launch.</em></h1>
-  <p>Game5 is the launchpad built only for games. Launch your game token on Ethereum, Base, Robinhood, BNB Chain or Solana in under a minute — with your App Store and Google Play links on-chain from day one.</p>
+  <h1 style="margin-top:22px" data-single-html="One game,<br>{chain}, <em>one launch.</em>">One game,<br>five chains, <em>one launch.</em></h1>
+  <p data-single="Game5 is the launchpad built only for games. Launch your game token on {chain} in under a minute — with your App Store and Google Play links on-chain from day one.">Game5 is the launchpad built only for games. Launch your game token on Ethereum, Base, Robinhood, BNB Chain or Solana in under a minute — with your App Store and Google Play links on-chain from day one.</p>
   <div class="cta">
     <a class="btn ac big" href="app.html#/create">Launch a token →</a>
     <a class="btn ghost big" href="app.html#/docs">Docs</a>
@@ -59,7 +59,7 @@
 <section class="sec">
   <div class="sec-h"><h2>Launch in four steps</h2><p>No code, no audits to buy, no liquidity to seed. Fixed 1B supply and a fair bonding curve for every token.</p></div>
   <div class="steps">
-    <div class="step"><i>01</i><h3>Pick a chain</h3><p>Ethereum, Base, Robinhood, BNB Chain or Solana.</p></div>
+    <div class="step"><i>01</i><h3 data-single="Connect a wallet">Pick a chain</h3><p data-single="Connect a wallet on {chain}.">Ethereum, Base, Robinhood, BNB Chain or Solana.</p></div>
     <div class="step"><i>02</i><h3>Add your game</h3><p>Name, ticker, logo, genre, platform, socials, App Store and Google Play.</p></div>
     <div class="step"><i>03</i><h3>Launch</h3><p>Free for 10M $GAME5 holders. Otherwise $0.50–$1 in the chain's native coin.</p></div>
     <div class="step"><i>04</i><h3>Graduate</h3><p>At $69K market cap, liquidity migrates to a DEX and is locked.</p></div>
@@ -71,7 +71,7 @@
     <div class="card">
       <span class="badge">Holder benefit</span>
       <div class="bignum" style="margin:22px 0 14px">Hold <em>10M</em><br>$GAME5.<br>Launch free.</div>
-      <p class="mut">Connect a wallet holding 10,000,000 $GAME5 or more and every token you create on Game5 is free — on all five chains.</p>
+      <p class="mut" data-single="Connect a wallet holding 10,000,000 $GAME5 or more and every token you create on Game5 is free — on {chain}.">Connect a wallet holding 10,000,000 $GAME5 or more and every token you create on Game5 is free — on all five chains.</p>
       <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:24px"><a class="btn ac" id="holdBuy" target="_blank" rel="noopener">Buy $GAME5</a><a class="btn ghost" href="app.html#/create">Check my wallet</a></div>
     </div>
     <div class="card">
@@ -103,11 +103,11 @@
 <script src="assets/tokens.js"></script>
 <script>
 (() => {
-  const { C, $, $$, usd, num, pct, logo, chainDot, short, copy, caBlock, buyUrl } = G5, T = G5_TOKENS;
+  const { C, $, $$, usd, num, pct, logo, chainDot, short, copy, caBlock, buyUrl } = G5, T = G5_TOKENS.filter(G5.active);
   $$("#xTop,#xHero,#xFoot").forEach(a => a.href = C.links.x);
   $$("#annBuy,#holdBuy").forEach(a => a.href = buyUrl());
   const { evm, sol } = C.token.contracts;
-  $("#heroCA").innerHTML = [["EVM", evm], ["SOL", sol]].filter(x => x[1]).map(([k, a]) => `<span class="ca-chip" data-copy="${a}">CA ${k} <code>${short(a)}</code><b>Copy</b></span>`).join("");
+  $("#heroCA").innerHTML = [["EVM", G5.hasEvm && evm], ["SOL", G5.hasSol && sol]].filter(x => x[1]).map(([k, a]) => `<span class="ca-chip" data-copy="${a}">CA ${k} <code>${short(a)}</code><b>Copy</b></span>`).join("");
   $("#heroCA").onclick = e => { const c = e.target.closest("[data-copy]"); if (c) copy(c.dataset.copy, "Contract address copied"); };
   $("#chainRow").innerHTML = C.chains.map(c => `<span style="--c:${c.color}"><i></i>${c.name}</span>`).join("") + `<span class="g5" style="--c:#ccff00"><i></i>$GAME5</span>`;
   caBlock($("#holdCA"));

@@ -1,9 +1,27 @@
 /* Game5 shared helpers: formatting, wallet, on-chain $GAME5 balance, native prices, CA widgets */
 window.G5 = (() => {
   const C = window.GAME5_CONFIG;
+  /* ---------- single / multi chain mode ---------- */
+  const one = C.mode === "single" && C.chains.find(c => c.id === C.singleChain);
+  if (one) C.chains = [one];
+  const single = !!one;
+  const WORDS = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"];
+  // "on Robinhood" (single) · "across five chains" (multi)
+  const across = () => single ? `on ${C.chains[0].name}` : `across ${WORDS[C.chains.length] || C.chains.length} chains`;
+  const hasEvm = C.chains.some(c => c.id !== "sol"), hasSol = C.chains.some(c => c.id === "sol");
+  function applyMode() {
+    document.body.dataset.mode = single ? "single" : "multi";
+    if (!single) return;
+    const fill = s => s.replaceAll("{chain}", C.chains[0].name);
+    document.querySelectorAll("[data-single]").forEach(el => el.textContent = fill(el.dataset.single));
+    document.querySelectorAll("[data-single-html]").forEach(el => el.innerHTML = fill(el.dataset.singleHtml));
+    document.querySelectorAll('[data-w="sol"]').forEach(el => el.hidden = !hasSol);
+    document.querySelectorAll('[data-w="evm"]').forEach(el => el.hidden = !hasEvm);
+  }
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const chain = id => C.chains.find(c => c.id === id);
+  const active = t => !!chain(t.chain); // token is on an active chain
   const caOf = id => C.token.contracts[id === "sol" ? "sol" : "evm"];
   const short = a => a ? a.slice(0, 6) + "…" + a.slice(-4) : "";
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -93,11 +111,13 @@ window.G5 = (() => {
   function caBlock(el, compact) {
     const { evm, sol } = C.token.contracts;
     const row = (label, a) => `<div class="ca-row"><span>${label}</span><code>${a ? (compact ? short(a) : a) : "Coming soon"}</code>${a ? `<button class="icon-btn" data-copy="${a}" title="Copy">⧉</button>` : ""}</div>`;
-    el.innerHTML = row("EVM", evm) + row("SOL", sol);
+    el.innerHTML = (hasEvm ? row("EVM", evm) : "") + (hasSol ? row("SOL", sol) : "");
     el.onclick = e => { const b = e.target.closest("[data-copy]"); if (b) copy(b.dataset.copy, "Contract address copied"); };
   }
   const buyUrl = () => C.links.buy.replace("{ca}", C.token.contracts.evm);
 
-  return { C, $, $$, chain, caOf, short, esc, usd, num, pct, ago, toast, copy, chainDot, logo, hash,
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", applyMode); else applyMode();
+
+  return { C, single, across, hasEvm, hasSol, active, $, $$, chain, caOf, short, esc, usd, num, pct, ago, toast, copy, chainDot, logo, hash,
     connect, disconnect, onWallet, get wallet() { return wallet; }, game5Holdings, prices, caBlock, buyUrl };
 })();

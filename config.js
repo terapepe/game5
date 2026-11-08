@@ -1,5 +1,9 @@
 // ===== GAME5 CONFIG — edit this file directly on GitHub to update the website =====
 window.GAME5_CONFIG = {
+  // Site mode: "multi" = all chains below · "single" = only singleChain (e.g. "robinhood")
+  mode: "multi",
+  singleChain: "robinhood",
+
   token: {
     name: "Game5",
     ticker: "GAME5",

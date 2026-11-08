@@ -1,7 +1,7 @@
 /* Game5 app: router + pages (Explore, Token, Create, Live Data, Docs) */
 (() => {
 const { C, $, $$, chain, short, esc, usd, num, pct, ago, toast, copy, chainDot, logo, caBlock, buyUrl } = G5;
-const T = G5_TOKENS;
+const T = G5_TOKENS.filter(G5.active);
 const page = $("#page");
 
 /* ---------- shell ---------- */
@@ -13,6 +13,7 @@ $("#side").addEventListener("click", e => { if (e.target.closest("a")) $("#app")
 $("#app").addEventListener("click", e => { if (e.target.id === "app" ) $("#app").classList.remove("nav-open"); });
 
 const wModal = $("#wModal");
+$("#evmChains").textContent = "MetaMask, Rabby, Coinbase · " + C.chains.filter(c => c.id !== "sol").map(c => c.short).join(", ");
 $("#walletBtn").onclick = () => G5.wallet ? (G5.disconnect(), toast("Disconnected")) : (wModal.hidden = false);
 wModal.onclick = async e => {
   const b = e.target.closest("[data-w]"); if (!b && e.target !== wModal) return;
@@ -62,12 +63,12 @@ function Explore() {
   let list = T.filter(t => (ex.chain === "all" || t.chain === ex.chain) && (!q || (t.name + " " + t.ticker + " " + t.ca + " " + t.genre).toLowerCase().includes(q)));
   list.sort((a, b) => key(b) - key(a));
   page.innerHTML = `
-  <div class="ph"><div><h1>Explore <span class="badge">Testnet</span></h1><p>Game tokens launched on Game5 across five chains.</p></div><a class="btn ac" href="#/create">+ Launch a token</a></div>
+  <div class="ph"><div><h1>Explore <span class="badge">Testnet</span></h1><p>Game tokens launched on Game5 ${G5.across()}.</p></div><a class="btn ac" href="#/create">+ Launch a token</a></div>
   <div class="filters">
     <div class="tabs" id="tabs">${TABS.map(([k, l]) => `<button data-t="${k}" class="${k === ex.tab ? "on" : ""}">${l}</button>`).join("")}</div>
     <div class="vt"><div class="tabs">${[["table", "☰ List"], ["grid", "▦ Grid"]].map(([k, l]) => `<button data-v="${k}" class="${k === ex.view ? "on" : ""}">${l}</button>`).join("")}</div></div>
   </div>
-  <div class="filters"><div class="chips" id="chips"><button data-c="all" class="${ex.chain === "all" ? "on" : ""}">All chains</button>${C.chains.map(c => `<button data-c="${c.id}" class="${ex.chain === c.id ? "on" : ""}" style="--c:${c.color}"><i></i>${c.name}</button>`).join("")}</div>
+  <div class="filters"><div class="chips" id="chips" ${G5.single ? "hidden" : ""}><button data-c="all" class="${ex.chain === "all" ? "on" : ""}">All chains</button>${C.chains.map(c => `<button data-c="${c.id}" class="${ex.chain === c.id ? "on" : ""}" style="--c:${c.color}"><i></i>${c.name}</button>`).join("")}</div>
   <span class="mut" style="font-size:.85rem">${list.length} tokens</span></div>
   ${!list.length ? `<div class="card empty">No tokens match “${esc(q)}”.</div>` : ex.view === "grid" ? grid(list) : table(list)}`;
   page.onclick = e => {
@@ -159,7 +160,7 @@ function TokenPage(id) {
 /* ================= CREATE ================= */
 const GENRES = ["Action", "Adventure", "Arcade", "Card", "Casual", "Fighting", "Horror", "Idle", "Puzzle", "Racing", "RPG", "Sandbox", "Shooter", "Simulation", "Sports", "Strategy", "Other"];
 const PLATFORMS = ["Mobile", "PC", "Web", "Console"];
-const draft = { chain: "base" };
+const draft = { chain: C.chains.some(c => c.id === "base") ? "base" : C.chains[0].id };
 function Create() {
   const L = C.launch;
   page.innerHTML = `
@@ -311,9 +312,9 @@ function Live() {
   const bars = (rows, val, fmt) => { const mx = Math.max(...rows.map(val)); return `<div class="bars">${rows.map(r => `<div class="b"><span>${r.label}</span><span class="t"><i style="width:${val(r) / mx * 100}%;--c:${r.color || "var(--ac)"}"></i></span><span>${fmt(val(r))}</span></div>`).join("")}</div>`; };
   const li = t => `<li data-id="${t.id}" style="cursor:pointer">${logo(t, 28)}<b>${esc(t.name)}</b>${chainDot(t.chain)}`;
   page.innerHTML = `
-  <div class="ph"><div><h1>Live Data <span class="badge">Testnet</span></h1><p>Platform statistics across all five chains.</p></div><span class="mut" style="font-size:.85rem" id="upd"></span></div>
+  <div class="ph"><div><h1>Live Data <span class="badge">Testnet</span></h1><p>Platform statistics ${G5.across()}.</p></div><span class="mut" style="font-size:.85rem" id="upd"></span></div>
   <div class="kpis">
-    ${[["Tokens launched", T.length, `${T.filter(t => Date.now() - t.createdAt < 864e5).length} in 24h`], ["Volume 24h", usd(sum("volume")), `${num(sum("txns"))} txns`], ["Total liquidity", usd(sum("liquidity")), "across 5 chains"], ["Total market cap", usd(sum("mcap")), "all tokens"],
+    ${[["Tokens launched", T.length, `${T.filter(t => Date.now() - t.createdAt < 864e5).length} in 24h`], ["Volume 24h", usd(sum("volume")), `${num(sum("txns"))} txns`], ["Total liquidity", usd(sum("liquidity")), G5.across()], ["Total market cap", usd(sum("mcap")), "all tokens"],
        ["Holders", num(sum("holders")), "unique wallets"], ["Graduated", grad, `${(grad / T.length * 100).toFixed(0)}% of tokens`], ["Avg. bonding progress", (sum("progress") / T.length).toFixed(0) + "%", "non-graduated incl."], ["Top gainer 24h", pct(top("change")[0].change), "$" + top("change")[0].ticker]]
       .map(([k, v, s]) => `<div class="card kpi"><span>${k}</span><b>${v}</b><small class="mut">${s}</small></div>`).join("")}
   </div>

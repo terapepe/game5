@@ -11,7 +11,9 @@ The launchpad for game tokens on Ethereum · Base · Robinhood · BNB Chain · S
 - `/app#/docs` — Docs
 
 ## Edit settings
-Everything editable is in `config.js`: $GAME5 contract addresses, X/Telegram/buy links, free-launch threshold, fee, RPCs, chains.
+Everything editable is in `config.js`:
+- `mode`: `"multi"` = all chains · `"single"` = only `singleChain` (e.g. `"robinhood"`) — texts, chain pickers, filters, wallet options and CA rows adapt automatically.
+- $GAME5 contract addresses, X/Telegram/buy links, free-launch threshold, fee, RPCs, chains.
 Commit to `main` and Vercel deploys automatically.
 
 ## Files

@@ -297,3 +297,4 @@ textarea.inp{min-height:96px;resize:vertical}
 @media(max-width:1100px){.ld-grid[style]{grid-template-columns:1fr!important}}
 .inp-g .inp{min-width:0}
 .tok-grid>div:last-child{grid-template-columns:minmax(0,1fr)}
+[hidden]{display:none!important}
