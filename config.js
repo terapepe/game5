@@ -17,7 +17,7 @@ window.GAME5_CONFIG = {
     x: "https://x.com/Game5Network",
     telegram: "",
     // where the "Buy $GAME5" buttons go. {ca} is replaced with the EVM contract address.
-    buy: "https://www.pangea.trade/app/t/{ca}"
+    buy: ""
   },
   launch: {
     holdForFree: 10000000,   // hold this many $GAME5 to create tokens for free
