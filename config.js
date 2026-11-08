@@ -1,7 +1,7 @@
 // ===== GAME5 CONFIG — edit this file directly on GitHub to update the website =====
 window.GAME5_CONFIG = {
   // Site mode: "multi" = all chains below · "single" = only singleChain (e.g. "robinhood")
-  mode: "multi",
+  mode: "single",
   singleChain: "robinhood",
 
   token: {
@@ -9,8 +9,8 @@ window.GAME5_CONFIG = {
     ticker: "GAME5",
     // $GAME5 contract addresses. Leave "" to show "Coming soon".
     contracts: {
-      evm: "",  // shared by ETH, Robinhood, Base, BSC
-      sol: "9uMi1XJ8Vyrm4JCmwSr9RRUwwWsP1gb8EdSb5W4fLoat"   // Solana
+      evm: "0xebc308609dd5939eb4b35ecde0f5bf30cf3eca7d",  // shared by ETH, Robinhood, Base, BSC
+      sol: ""   // Solana
     }
   },
   links: {
