@@ -10,7 +10,7 @@ window.GAME5_CONFIG = {
     // $GAME5 contract addresses. Leave "" to show "Coming soon".
     contracts: {
       evm: "",  // shared by ETH, Robinhood, Base, BSC
-      sol: "9iRDv4EQkdgMm1x6gPn8Co6trexUNuZUhBU9wgKWd6ea"   // Solana
+      sol: ""   // Solana
     }
   },
   links: {
