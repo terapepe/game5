@@ -3,7 +3,7 @@ window.GAME5_CONFIG = {
   // Site mode: "single" = only singleChain (sol | robinhood | base | bsc | eth)
   //            "multi"  = always Solana, Robinhood, Base, BSC (+ any extra id added to multiOrder, e.g. "eth")
   mode: "single",
-  singleChain: "robinhood",
+  singleChain: "sol",
   multiOrder: ["sol", "robinhood", "base", "bsc"],
 
   token: {
