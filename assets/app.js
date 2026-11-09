@@ -1,12 +1,12 @@
 /* Game5 app: router + pages (Explore, Token, Create, Live Data, Docs) */
 (() => {
-const { C, $, $$, chain, short, esc, usd, num, pct, ago, toast, copy, chainDot, logo, caBlock, buyUrl } = G5;
+const { C, $, $$, chain, short, esc, usd, num, pct, ago, toast, copy, chainDot, logo, caBlock, copyButtons, names, EVM } = G5;
 const T = G5_TOKENS.filter(G5.active);
 const page = $("#page");
 
 /* ---------- shell ---------- */
 caBlock($("#sideCA"), true);
-$("#sideBuy").href = buyUrl();
+copyButtons($("#sideCopy"), "btn");
 $("#sideX").href = $("#topX").href = C.links.x;
 $("#menuBtn").onclick = () => $("#app").classList.toggle("nav-open");
 $("#side").addEventListener("click", e => { if (e.target.closest("a")) $("#app").classList.remove("nav-open"); });
@@ -294,7 +294,8 @@ async function fee() {
     $("#sumFee").innerHTML = `<span class="up">Free</span>`;
   } else {
     const msg = !h || !h.ok ? "Couldn't read your $GAME5 balance right now." : `You hold ${num(h.total)} $GAME5 — ${num(L.holdForFree - h.total)} more for free launches.`;
-    box.innerHTML = `<div class="fee-box paid"><h4>💳 Launch fee applies</h4><p>${msg}</p>${paidLine}${per}<a class="btn ghost" style="margin-top:12px;width:100%" href="${buyUrl()}" target="_blank" rel="noopener">Buy $GAME5 to launch free</a></div>`;
+    box.innerHTML = `<div class="fee-box paid"><h4>💳 Launch fee applies</h4><p>${msg}</p>${paidLine}${per}<div class="copy-btns col" id="feeCopy" style="margin-top:12px"></div></div>`;
+    copyButtons($("#feeCopy"), "btn ghost");
     $("#sumFee").textContent = nat || "$" + FEE_USD.toFixed(2);
   }
 }
@@ -343,17 +344,19 @@ function Live() {
 
 /* ================= DOCS ================= */
 function Docs() {
-  const L = C.launch, { evm, sol } = C.token.contracts;
+  const L = C.launch, OR = names(C.chains, "or"), EVMS = names(EVM, "and"), hasSol = G5.hasSol, hasEvm = G5.hasEvm;
+  const natives = [...new Set(C.chains.map(c => c.native))].join(", ").replace(/, ([^,]*)$/, " or $1");
+  const wallets = [hasEvm && `an EVM wallet (MetaMask, Rabby, Coinbase Wallet) for ${EVMS}`, hasSol && "Phantom / Solflare for Solana"].filter(Boolean).join(", or ");
   const S = [
-    ["intro", "Introduction", `<p>Game5 is a token launchpad built only for games. Studios and indie developers launch a token for their game in under a minute on <b>Ethereum, Base, Robinhood Chain, BNB Chain or Solana</b>, with the game's genre, platforms and App Store / Google Play links attached to the token from day one.</p>
+    ["intro", "Introduction", `<p>Game5 is a token launchpad built only for games. Studios and indie developers launch a token for their game in under a minute on <b>${OR}</b>, with the game's genre, platforms and App Store / Google Play links attached to the token from day one.</p>
       <p>Players discover games on <a href="#/explore" style="color:var(--ac)">Explore</a>, trade tokens on a fair bonding curve, and follow each game through to DEX listing.</p>
       <div class="callout"><p>Game5 is currently running on <b>testnet</b>. Tokens shown in the app are testnet launches.</p></div>`],
-    ["start", "Getting started", `<ol><li>Install an EVM wallet (MetaMask, Rabby, Coinbase Wallet) for Ethereum, Base, Robinhood and BNB Chain, or Phantom / Solflare for Solana.</li>
-      <li>Fund it with the chain's native coin (ETH, BNB or SOL) for gas and the launch fee.</li><li>Open the app and click <b>Connect Wallet</b> in the top right.</li>
+    ["start", "Getting started", `<ol><li>Install ${wallets}.</li>
+      <li>Fund it with the chain's native coin (${natives}) for gas and the launch fee.</li><li>Open the app and click <b>Connect Wallet</b> in the top right.</li>
       <li>Go to <a href="#/create" style="color:var(--ac)">Create Token</a>.</li></ol>`],
     ["create", "Creating a token", `<p>Every token on Game5 has the same fair setup: fixed supply, no presale, no team allocation.</p>
       <table><tr><th>Field</th><th>Required</th><th>Notes</th></tr>
-      <tr><td>Chain</td><td>Yes</td><td>Ethereum, Base, Robinhood, BNB Chain or Solana</td></tr>
+      <tr><td>Chain</td><td>Yes</td><td>${OR}</td></tr>
       <tr><td>Logo</td><td>Yes</td><td>PNG/JPG/GIF/WEBP, square, max 4MB</td></tr>
       <tr><td>Name / Ticker</td><td>Yes</td><td>Ticker 2–10 letters or numbers, unique per chain</td></tr>
       <tr><td>Description</td><td>Yes</td><td>20–500 characters</td></tr>
@@ -363,8 +366,8 @@ function Docs() {
       <tr><td>Banner, trailer</td><td>No</td><td>Banner 1500×500, YouTube trailer link</td></tr>
       <tr><td>Initial buy</td><td>No</td><td>Buy your own token in the same transaction</td></tr></table>`],
     ["fees", "Fees & $GAME5 benefit", `<div class="callout"><p>Hold <b>${num(L.holdForFree)} $GAME5</b> or more in the connected wallet and creating tokens is <b>free</b>.</p></div>
-      <p>The Create page reads your $GAME5 balance directly from the blockchain when you connect. An EVM wallet is checked on Ethereum, Base, Robinhood and BNB Chain combined; a Solana wallet is checked on Solana.</p>
-      <table><tr><th>Item</th><th>Fee</th></tr><tr><td>Launch (≥ 10M $GAME5)</td><td>Free</td></tr><tr><td>Launch (everyone else)</td><td>$${L.feeUsdRange}, paid in ETH, BNB or SOL</td></tr>
+      <p>The Create page reads your $GAME5 balance directly from the blockchain when you connect. ${[hasEvm && `An EVM wallet is checked on ${EVMS}${EVM.length > 1 ? " combined" : ""}`, hasSol && "a Solana wallet is checked on Solana"].filter(Boolean).join("; ")}.</p>
+      <table><tr><th>Item</th><th>Fee</th></tr><tr><td>Launch (≥ 10M $GAME5)</td><td>Free</td></tr><tr><td>Launch (everyone else)</td><td>$${L.feeUsdRange}, paid in ${natives}</td></tr>
       <tr><td>Trading on the bonding curve</td><td>1% per trade</td></tr><tr><td>Graduation to DEX</td><td>No fee for the creator</td></tr></table>
       <p>The launch fee in native coin is calculated from the live market price at the time you launch.</p>`],
     ["curve", "Bonding curve & graduation", `<p>Every token starts on a bonding curve: price rises as people buy and falls as they sell. There is no presale and no team allocation — the creator buys like everyone else (optional initial buy).</p>
@@ -375,7 +378,7 @@ function Docs() {
       <p>Filter by chain, switch between list and grid view, or search by name, ticker or contract address.</p>`],
     ["live", "Live data", `<p><a href="#/live" style="color:var(--ac)">Live Data</a> shows platform-wide stats: tokens launched, volume, liquidity, market cap, holders, graduations, per-chain breakdowns, top genres and the latest launches.</p>`],
     ["game5", "$GAME5 token", `<p>$GAME5 is the token of the Game5 Network.</p><ul><li>Free token launches for holders of ${num(L.holdForFree)}+</li><li>Boosted placement on Explore (coming)</li><li>Share of platform trading fees (coming)</li><li>Governance over featured games and new chains (coming)</li></ul>
-      <table><tr><th>Network</th><th>Contract</th></tr><tr><td>Ethereum, Base, Robinhood, BNB Chain</td><td><code>${evm || "Coming soon"}</code></td></tr><tr><td>Solana</td><td><code>${sol || "Coming soon"}</code></td></tr></table>
+      <table><tr><th>Network</th><th>Contract</th></tr>${G5.caGroups().map(g => `<tr><td>${names(g.chains, "and")}</td><td><code>${g.ca || "Coming soon"}</code></td></tr>`).join("")}</table>
       <p>Always verify the contract against this page or <a href="${C.links.x}" target="_blank" rel="noopener" style="color:var(--ac)">@Game5Network</a> on X.</p>`],
     ["safety", "Safety", `<ul><li>Game5 never asks for your seed phrase or private key.</li><li>Check the contract address before buying — copy it from the token page.</li><li>A token on Game5 is not an endorsement of the game. Do your own research; check the store links and socials.</li><li>Crypto assets are volatile. Only trade what you can afford to lose.</li></ul>`],
     ["faq", "FAQ", `<h3>Do I need to code?</h3><p>No. Fill in the form and launch.</p><h3>Can I launch the same token on several chains?</h3><p>Each launch is on one chain. You can launch separately on others with the same ticker.</p>

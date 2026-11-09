@@ -1,6 +1,6 @@
 # Game5 — game5.fun
 
-The launchpad for game tokens on Ethereum · Base · Robinhood · BNB Chain · Solana. Token **$GAME5** · X: [@Game5Network](https://x.com/Game5Network)
+The launchpad for game tokens — single chain or multi-chain (Solana · Robinhood · Base · BNB Chain). Token **$GAME5** · X: [@Game5Network](https://x.com/Game5Network)
 
 ## Pages
 - `/` — landing page
@@ -12,8 +12,12 @@ The launchpad for game tokens on Ethereum · Base · Robinhood · BNB Chain · S
 
 ## Edit settings
 Everything editable is in `config.js`:
-- `mode`: `"multi"` = all chains · `"single"` = only `singleChain` (e.g. `"robinhood"`) — texts, chain pickers, filters, wallet options and CA rows adapt automatically.
-- $GAME5 contract addresses, X/Telegram/buy links, free-launch threshold, fee, RPCs, chains.
+- `mode`: `"single"` = only `singleChain` (`sol` | `robinhood` | `base` | `bsc` | `eth`) — texts, accent color, tagline, chain pickers, filters, wallet options and CA rows adapt automatically.
+  `"multi"` = always Solana, Robinhood, Base, BSC (order = `multiOrder`; add `"eth"` there to include Ethereum).
+- `token.contracts.evm` — $GAME5 CA shared by all EVM chains · `token.contracts.sol` — Solana mint.
+- `chains[]` — `name`, `short`, `color`, `tagline`, `ca` (empty → `token.contracts`), explorer.
+- "Copy CA" buttons replace the old Buy buttons; chains sharing a CA get one button (e.g. "Copy RH/BASE/BSC CA").
+- X/Telegram links, free-launch threshold, fee, RPCs.
 Commit to `main` and Vercel deploys automatically.
 
 ## Files

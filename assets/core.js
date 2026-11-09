@@ -2,27 +2,43 @@
 window.G5 = (() => {
   const C = window.GAME5_CONFIG;
   /* ---------- single / multi chain mode ---------- */
-  const one = C.mode === "single" && C.chains.find(c => c.id === C.singleChain);
-  if (one) C.chains = [one];
-  const single = !!one;
+  const ALL = C.chains, REQUIRED = ["sol", "robinhood", "base", "bsc"]; // multi always has these 4
+  const single = C.mode !== "multi";
+  C.chains = single ? [ALL.find(c => c.id === C.singleChain) || ALL[0]]
+    : [...new Set([...(C.multiOrder || []), ...REQUIRED])].map(id => ALL.find(c => c.id === id)).filter(Boolean);
   const WORDS = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"];
-  // "on Robinhood" (single) · "across five chains" (multi)
+  // "on Robinhood" (single) · "across four chains" (multi)
   const across = () => single ? `on ${C.chains[0].name}` : `across ${WORDS[C.chains.length] || C.chains.length} chains`;
+  const names = (list, sep) => list.map(c => c.name).join(", ").replace(/, ([^,]*)$/, ` ${sep} $1`);
   const hasEvm = C.chains.some(c => c.id !== "sol"), hasSol = C.chains.some(c => c.id === "sol");
+  const EVM = C.chains.filter(c => c.id !== "sol");
   function applyMode() {
     document.body.dataset.mode = single ? "single" : "multi";
-    if (!single) return;
-    const fill = s => s.replaceAll("{chain}", C.chains[0].name);
-    document.querySelectorAll("[data-single]").forEach(el => el.textContent = fill(el.dataset.single));
-    document.querySelectorAll("[data-single-html]").forEach(el => el.innerHTML = fill(el.dataset.singleHtml));
+    const c0 = C.chains[0];
+    const fill = s => s.replaceAll("{chain}", c0.name).replaceAll("{chainsOr}", names(C.chains, "or")).replaceAll("{chainsAnd}", names(C.chains, "and"))
+      .replaceAll("{n}", C.chains.length).replaceAll("{nword}", WORDS[C.chains.length] || C.chains.length);
+    const m = single ? "single" : "multi";
+    document.querySelectorAll(`[data-${m}]`).forEach(el => el.textContent = fill(el.dataset[m]));
+    document.querySelectorAll(`[data-${m}-html]`).forEach(el => el.innerHTML = fill(el.dataset[m + "Html"]));
+    document.querySelectorAll("meta[data-desc]").forEach(el => el.content = fill(el.dataset.desc));
     document.querySelectorAll('[data-w="sol"]').forEach(el => el.hidden = !hasSol);
     document.querySelectorAll('[data-w="evm"]').forEach(el => el.hidden = !hasEvm);
+    if (!single) return;
+    // single-chain design: whole accent follows the chain color + tagline
+    document.documentElement.style.setProperty("--ac", c0.color);
+    document.querySelectorAll("[data-tagline]").forEach(el => { if (c0.tagline) { el.textContent = c0.tagline; el.hidden = false; } });
   }
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const chain = id => C.chains.find(c => c.id === id);
   const active = t => !!chain(t.chain); // token is on an active chain
-  const caOf = id => C.token.contracts[id === "sol" ? "sol" : "evm"];
+  const caOf = id => ((ALL.find(c => c.id === id) || {}).ca || C.token.contracts[id === "sol" ? "sol" : "evm"] || "").trim();
+  // chains sharing a CA are grouped (multi: RH/BASE/BSC share one, SOL its own)
+  const caGroups = () => C.chains.reduce((acc, c) => {
+    const ca = caOf(c.id), key = ca ? ca.toLowerCase() : c.id, g = acc.find(x => x.key === key);
+    g ? g.chains.push(c) : acc.push({ key, ca, chains: [c], tag: "" });
+    return acc;
+  }, []).map(g => ({ ...g, tag: g.chains.map(c => c.short).join("/") }));
   const short = a => a ? a.slice(0, 6) + "…" + a.slice(-4) : "";
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
@@ -80,7 +96,7 @@ window.G5 = (() => {
     .then(r => r.json()).then(r => { if (r.error) throw new Error(r.error.message); return r.result; });
   const units = (raw, dec) => Number(raw) / 10 ** dec;
   async function evmBalance(chainId, addr) {
-    const ca = C.token.contracts.evm, url = C.rpc[chainId]; if (!ca || !url) return null;
+    const ca = caOf(chainId), url = C.rpc[chainId]; if (!ca || !url) return null;
     const [raw, dec] = await Promise.all([
       rpcCall(url, "eth_call", [{ to: ca, data: "0x70a08231" + addr.slice(2).toLowerCase().padStart(64, "0") }, "latest"]),
       rpcCall(url, "eth_call", [{ to: ca, data: "0x313ce567" }, "latest"])
@@ -89,7 +105,7 @@ window.G5 = (() => {
     return units(BigInt(raw), Number(BigInt(dec)));
   }
   async function solBalance(addr) {
-    const ca = C.token.contracts.sol; if (!ca) return null;
+    const ca = caOf("sol"); if (!ca) return null;
     const r = await rpcCall(C.rpc.sol, "getTokenAccountsByOwner", [addr, { mint: ca }, { encoding: "jsonParsed" }]);
     return (r?.value || []).reduce((s, a) => s + (a.account.data.parsed.info.tokenAmount.uiAmount || 0), 0);
   }
@@ -107,17 +123,21 @@ window.G5 = (() => {
   const prices = () => pricesP ??= fetch("https://api.coingecko.com/api/v3/simple/price?ids=ethereum,binancecoin,solana&vs_currencies=usd")
     .then(r => r.json()).catch(() => ({}));
 
-  /* ---------- $GAME5 CA widget ---------- */
+  /* ---------- $GAME5 CA widgets ---------- */
   function caBlock(el, compact) {
-    const { evm, sol } = C.token.contracts;
-    const row = (label, a) => `<div class="ca-row"><span>${label}</span><code>${a ? (compact ? short(a) : a) : "Coming soon"}</code>${a ? `<button class="icon-btn" data-copy="${a}" title="Copy">⧉</button>` : ""}</div>`;
-    el.innerHTML = (hasEvm ? row("EVM", evm) : "") + (hasSol ? row("SOL", sol) : "");
+    const row = g => `<div class="ca-row"><span>${g.tag}</span><code>${g.ca ? (compact ? short(g.ca) : g.ca) : "Coming soon"}</code>${g.ca ? `<button class="icon-btn" data-copy="${g.ca}" title="Copy">⧉</button>` : ""}</div>`;
+    el.innerHTML = caGroups().map(row).join("");
     el.onclick = e => { const b = e.target.closest("[data-copy]"); if (b) copy(b.dataset.copy, "Contract address copied"); };
   }
-  const buyUrl = () => C.links.buy.replace("{ca}", C.token.contracts.evm);
+  // "Copy RH/BASE/BSC CA" · "Copy SOL CA" buttons (replace the old Buy buttons)
+  function copyButtons(el, cls = "btn ac") {
+    el.innerHTML = caGroups().filter(g => g.ca).map(g => `<button class="${cls}" data-copy="${g.ca}">Copy ${g.tag} CA</button>`).join("")
+      || `<button class="${cls}" disabled>CA coming soon</button>`;
+    el.onclick = e => { const b = e.target.closest("[data-copy]"); if (b) copy(b.dataset.copy, "Contract address copied"); };
+  }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", applyMode); else applyMode();
 
-  return { C, single, across, hasEvm, hasSol, active, $, $$, chain, caOf, short, esc, usd, num, pct, ago, toast, copy, chainDot, logo, hash,
-    connect, disconnect, onWallet, get wallet() { return wallet; }, game5Holdings, prices, caBlock, buyUrl };
+  return { C, single, across, names, EVM, hasEvm, hasSol, active, $, $$, chain, caOf, caGroups, short, esc, usd, num, pct, ago, toast, copy, chainDot, logo, hash,
+    connect, disconnect, onWallet, get wallet() { return wallet; }, game5Holdings, prices, caBlock, copyButtons };
 })();
