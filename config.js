@@ -12,8 +12,8 @@ window.GAME5_CONFIG = {
     // $GAME5 contract addresses. Leave "" to show "Coming soon".
     // A chain can override with its own `ca` in `chains` below.
     contracts: {
-      evm: "0xebc308609dd5939eb4b35ecde0f5bf30cf3eca7d",  // shared by all EVM chains (Robinhood, Base, BSC, ETH)
-      sol: ""   // Solana
+      evm: "",  // shared by all EVM chains (Robinhood, Base, BSC, ETH)
+      sol: "sol"   // Solana
     }
   },
   links: {
