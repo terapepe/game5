@@ -7,13 +7,13 @@ window.GAME5_CONFIG = {
   multiOrder: ["sol", "robinhood", "base", "bsc"],
 
   token: {
-    name: "Game",
-    ticker: "GAME",
+    name: "Game5 Network",
+    ticker: "GAME5",
     // $GAME5 contract addresses. Leave "" to show "Coming soon".
     // A chain can override with its own `ca` in `chains` below.
     contracts: {
-      evm: "",  // shared by all EVM chains (Robinhood, Base, BSC, ETH)
-      sol: ""   // Solana
+      evm: "0xAc161B95A50C5C3B677C31b87Ede96ecbddF16Ea",  // shared by all EVM chains (Robinhood, Base, BSC, ETH)
+      sol: "CEUmM9fJSEz3FvbZXCXMLBfBhAzzhgWVgCRVz5LQ26ea"   // Solana
     }
   },
   links: {
