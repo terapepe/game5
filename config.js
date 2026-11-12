@@ -1,16 +1,13 @@
-// ===== GAME5 CONFIG — edit this file directly on GitHub to update the website =====
 window.GAME5_CONFIG = {
-  // Site mode: "single" = only singleChain (sol | robinhood | base | bsc | eth)
-  //            "multi"  = always Solana, Robinhood, Base, BSC (+ any extra id added to multiOrder, e.g. "eth")
+  // Site mode: "single"
+  //            "multi"
   mode: "single",
-  singleChain: "sol",
+  singleChain: "robinhood",
   multiOrder: ["sol", "robinhood", "base", "bsc"],
 
   token: {
     name: "Game5 Network",
     ticker: "GAME5",
-    // $GAME5 contract addresses. Leave "" to show "Coming soon".
-    // A chain can override with its own `ca` in `chains` below.
     contracts: {
       evm: "",  // shared by all EVM chains (Robinhood, Base, BSC, ETH)
       sol: ""   // Solana
@@ -27,7 +24,6 @@ window.GAME5_CONFIG = {
     feeUsdRange: "0.50 – 1.00",
     totalSupply: 1000000000  // fixed supply of every token launched on Game5
   },
-  // Public RPCs used to read $GAME5 balances (all support browser CORS)
   rpc: {
     eth:       "https://ethereum-rpc.publicnode.com",
     base:      "https://base-rpc.publicnode.com",
