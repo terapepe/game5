@@ -9,7 +9,7 @@ window.GAME5_CONFIG = {
     name: "Game5 Network",
     ticker: "GAME5",
     contracts: {
-      evm: "",  // shared by all EVM chains (Robinhood, Base, BSC, ETH)
+      evm: "0xfee6a856416be749abecfbd68878fc5d5f248030",  // shared by all EVM chains (Robinhood, Base, BSC, ETH)
       sol: ""   // Solana
     }
   },
