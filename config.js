@@ -2,7 +2,7 @@
 window.GAME5_CONFIG = {
   // Site mode: "single" = only singleChain (sol | robinhood | base | bsc | eth)
   //            "multi"  = always Solana, Robinhood, Base, BSC (+ any extra id added to multiOrder, e.g. "eth")
-  mode: "multi",
+  mode: "single",
   singleChain: "sol",
   multiOrder: ["sol", "robinhood", "base", "bsc"],
 
@@ -12,8 +12,8 @@ window.GAME5_CONFIG = {
     // $GAME5 contract addresses. Leave "" to show "Coming soon".
     // A chain can override with its own `ca` in `chains` below.
     contracts: {
-      evm: "0xAc161B95A50C5C3B677C31b87Ede96ecbddF16Ea",  // shared by all EVM chains (Robinhood, Base, BSC, ETH)
-      sol: "CEUmM9fJSEz3FvbZXCXMLBfBhAzzhgWVgCRVz5LQ26ea"   // Solana
+      evm: "",  // shared by all EVM chains (Robinhood, Base, BSC, ETH)
+      sol: ""   // Solana
     }
   },
   links: {
