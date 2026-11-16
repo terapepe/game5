@@ -1,6 +1,4 @@
 window.GAME5_CONFIG = {
-  // Site mode: "single"
-  //            "multi"
   mode: "single",
   singleChain: "robinhood",
   multiOrder: ["sol", "robinhood", "base", "bsc"],
@@ -9,8 +7,8 @@ window.GAME5_CONFIG = {
     name: "Game5 Network",
     ticker: "GAME5",
     contracts: {
-      evm: "0xfee6a856416be749abecfbd68878fc5d5f248030",  // shared by all EVM chains (Robinhood, Base, BSC, ETH)
-      sol: ""   // Solana
+      evm: "", 
+      sol: ""  
     }
   },
   links: {
