@@ -4,15 +4,15 @@ window.GAME5_CONFIG = {
   multiOrder: ["sol", "robinhood", "base", "bsc"],
 
   token: {
-    name: "Game5 Network",
-    ticker: "GAME5",
+    name: "Game5",
+    ticker: "G5",
     contracts: {
       evm: "", 
       sol: ""  
     }
   },
   links: {
-    x: "https://x.com/Game5Network",
+    x: "https://x.com/Game5dotfun",
     telegram: ""
   },
   launch: {
