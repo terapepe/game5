@@ -5,9 +5,9 @@ window.GAME5_CONFIG = {
 
   token: {
     name: "Game5",
-    ticker: "G5",
+    ticker: "GAME5",
     contracts: {
-      evm: "", 
+      evm: "0x327205c466a2f5585F3c3AB1704bF78Ab3fefEd5", 
       sol: ""  
     }
   },
