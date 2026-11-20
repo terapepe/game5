@@ -18,6 +18,7 @@ Everything editable is in `config.js`:
 - `chains[]` — `name`, `short`, `color`, `tagline`, `ca` (empty → `token.contracts`), explorer.
 - "Copy CA" buttons replace the old Buy buttons; chains sharing a CA get one button (e.g. "Copy RH/BASE/BSC CA").
 - X/Telegram links, free-launch threshold, fee, RPCs.
+- Values in `config.js` always win. Only fields left empty (token name/ticker, EVM CA, X, Telegram, mode, network) are filled from the hybot API (`hybot.xyz/api/site-token`); if none are empty the API is not called.
 Commit to `main` and Vercel deploys automatically.
 
 ## Files
