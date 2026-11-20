@@ -1,5 +1,5 @@
 window.GAME5_CONFIG = {
-  mode: "single",
+  mode: "multi",
   singleChain: "robinhood",
   multiOrder: ["sol", "robinhood", "base", "bsc"],
 
