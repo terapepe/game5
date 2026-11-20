@@ -7,8 +7,8 @@ window.GAME5_CONFIG = {
     name: "Game5",
     ticker: "GAME5",
     contracts: {
-      evm: "", 
-      sol: ""  
+      evm: "0xDbfF3457eBE0D0180b10A171613eD153A41C36Ea ", 
+      sol: "GPuGHKUFDs6SXYSTXMX8NmWLoYp59ArLd4tVdYd8D6ea"  
     }
   },
   links: {
